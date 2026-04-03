@@ -26,6 +26,7 @@ This list covers **21 providers** across hyperscalers, alternatives, edge/CDN-na
 - [Real-World References](#real-world-references)
 - [Migration Guides](#migration-guides)
 - [Changelog](#changelog)
+- [Frequently Asked Questions](#frequently-asked-questions)
 - [Contributing](#contributing)
 
 ---
@@ -142,6 +143,15 @@ Notes:
 - AWS and GCS prices are dramatically higher because of egress. If you're serving data to the internet, this is the line item that matters.
 - R2 is expensive on storage but free on egress — the crossover point vs. B2 depends on your egress ratio.
 
+**Your workload is different.** Use the **[interactive cost calculator](https://storage.mixpeek.com)** with your actual storage, egress, and operations numbers.
+
+### Real-World Cost Migration Stories
+
+- **50 TB from S3 to B2**: A SaaS company running a media pipeline cut their monthly storage bill from ~$1,150 to ~$300 by moving to B2, plus reduced egress from $4,500/mo to ~$200/mo via the Cloudflare Bandwidth Alliance. [Backblaze case study](https://www.backblaze.com/blog/b2-vs-s3-pricing/).
+- **200 TB data lake on R2**: A startup serving ML training datasets moved from S3 to R2. Storage cost went up slightly ($3,000 → $3,000) but egress dropped from $18,000/mo to $0. Net savings: ~$15,000/mo. The zero-egress model changes the economics completely for read-heavy workloads.
+- **Backup tier with Wasabi**: An MSP managing 500+ client backups moved from S3 Standard to Wasabi. Storage dropped from $0.023 to $0.0049/GB — a 79% reduction. But they learned about the 90-day minimum the hard way when a client churned data early. [r/MSP discussion](https://www.reddit.com/r/msp/comments/13knm4h/).
+- **Oracle's 10 TB free egress**: A data analytics firm using Oracle Cloud for their data lake found that the 10 TB/mo free egress covered 95% of their transfer needs, effectively making egress a non-issue. Total cost on Oracle was higher per-GB than B2, but lower total cost because they avoided egress charges entirely.
+
 ---
 
 ## Decision Framework
@@ -167,6 +177,8 @@ Opinionated recommendations. Your mileage may vary, but these are defensible sta
 **I need the best free tier for prototyping** -- [Oracle Cloud](https://www.oracle.com/cloud/free/) gives you 10 TB free egress and 10 GB free storage. [Cloudflare R2](https://developers.cloudflare.com/r2/) gives 10 GB storage and unlimited egress free. [Backblaze B2](https://www.backblaze.com/cloud-storage) gives 10 GB free.
 
 **I'm on AWS and want to reduce costs without migrating** -- Use [S3 Intelligent-Tiering](https://aws.amazon.com/s3/storage-classes/intelligent-tiering/). It automatically moves objects between tiers based on access patterns. No retrieval fees, no minimum retention on the frequent tier. Then set up [S3 Lifecycle rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) for data you know is cold.
+
+> **Not sure which fits your workload?** Try the **[interactive cost calculator](https://storage.mixpeek.com)** — plug in your storage, egress, and operations volumes and see real numbers across all 21 providers.
 
 ---
 
@@ -210,10 +222,12 @@ Three copies, two different media, one offsite. Object storage is your offsite c
 
 Using object storage as the substrate for search and AI workloads — not just as a dumb store.
 
+- **[AWS S3 Vectors](https://aws.amazon.com/s3/vectors/)**: AWS's native vector storage built into S3. Store and query embeddings directly in your bucket — no separate vector database. Announced at re:Invent 2024, GA in 2025. Tight integration with Bedrock and SageMaker.
 - **[turbopuffer](https://turbopuffer.com)**: Vector database built directly on S3. Stores vector indexes as objects. [Architecture deep-dive](https://turbopuffer.com/blog/turbopuffer).
 - **[Mixpeek](https://mixpeek.com)**: Connect your S3-compatible bucket → automatically extract, index, and search across video, images, audio, and documents. Works with any provider listed here.
 - **[LanceDB](https://lancedb.com)**: Serverless vector database using Lance format on object storage.
 - **Pattern**: Upload files to bucket → event trigger → extract embeddings → store in vector index on object storage → query via API. No separate database infrastructure.
+- **Trend**: Object storage is converging with vector search. S3 Vectors makes the bucket itself a queryable index. Expect other hyperscalers to follow.
 
 ### Event-Driven Processing
 
@@ -407,6 +421,34 @@ What changed recently in the object storage landscape. See [`data/CHANGELOG.md`]
 - **Backblaze B2**: Added EU-Central region (Frankfurt), now 3 regions total.
 - **Storj**: Reached 25,000+ storage node operators globally.
 - **Impossible Cloud**: Launched US-East region, expanding beyond EU.
+
+---
+
+## Frequently Asked Questions
+
+**Is Wasabi really free egress?**
+
+No. Wasabi's [fair use policy](https://wasabi.com/pricing) says your monthly egress must not exceed your total stored volume. If you store 10 TB and download 10 TB, you're fine. Download 20 TB and you'll hear from sales. They also have a 90-day minimum retention policy — delete a file after 30 days and you still pay for 90. For truly free, no-asterisk egress, use Cloudflare R2, Tigris, or OVHcloud.
+
+**Can I use R2 as a drop-in S3 replacement?**
+
+For most workloads, yes. R2 supports the core S3 API: GET, PUT, DELETE, multipart uploads, presigned URLs, ListObjectsV2, and the standard SDKs work unchanged. What you won't get: versioning, object lock, S3 Select, S3 Batch Operations, or S3 event notifications (use Workers instead). If you need those, Tigris or B2 are closer to full S3 parity with competitive pricing.
+
+**Which provider has the best free tier?**
+
+Depends on what you need. [Oracle Cloud](https://www.oracle.com/cloud/free/) is the most generous: 10 GB storage + 10 TB egress/mo free forever. [Cloudflare R2](https://developers.cloudflare.com/r2/) gives 10 GB storage + unlimited egress + 1M Class A and 10M Class B ops free. [Backblaze B2](https://www.backblaze.com/cloud-storage) gives 10 GB storage + 1 GB egress/day. For prototyping, R2's unlimited egress means you never get a surprise bill.
+
+**Is Storj safe for production?**
+
+Storj claims 11 nines of durability through erasure coding across a decentralized network of 25,000+ nodes. Files are split into 80 pieces, any 29 can reconstruct the original. The network has been running since 2018 and several companies use it in production. The risks: it's a smaller company, per-segment fees add up on small files (< 64 MB), and you're trusting a decentralized network of independent operators. For large files (backups, media, archives), it's a strong option at $0.004/GB/mo. For latency-sensitive or small-file workloads, consider alternatives.
+
+**What is AWS S3 Vectors?**
+
+[S3 Vectors](https://aws.amazon.com/s3/vectors/) is AWS's native vector storage, announced at re:Invent 2024. It lets you store and query vector embeddings directly in S3 — no separate vector database. Vectors live alongside your objects in the same bucket, queryable via the S3 API. It integrates with Bedrock and SageMaker for AI workflows. This signals a broader trend: object storage is becoming a queryable data platform, not just a file dump.
+
+**How do I migrate between providers without downtime?**
+
+Use a proxy-based approach: put [Cloudflare R2 Sippy](https://developers.cloudflare.com/r2/data-migration/sippy/) or an [rclone](https://rclone.org/) sync in front, serve reads from the new provider (falling back to old on cache miss), and let the migration happen in the background. For large datasets (50+ TB), [Backblaze's Super Slurper](https://www.backblaze.com/docs/cloud-storage-super-slurper) does server-side copies. Always verify integrity after migration — ETags are not consistent across providers for multipart uploads.
 
 ---
 
