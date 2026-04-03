@@ -1,0 +1,78 @@
+name: Validate Provider Data
+
+on:
+  push:
+    paths:
+      - 'data/**'
+  pull_request:
+    paths:
+      - 'data/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install jsonschema
+        run: pip install jsonschema
+
+      - name: Validate all provider JSON files
+        run: |
+          python3 -c "
+          import json, sys, glob
+          from jsonschema import validate, ValidationError
+
+          schema = json.load(open('data/schema.json'))
+          errors = []
+          files = sorted(glob.glob('data/providers/*.json'))
+          print(f'Validating {len(files)} provider files...')
+
+          for f in files:
+              try:
+                  data = json.load(open(f))
+                  validate(instance=data, schema=schema)
+                  print(f'  ✓ {f}')
+              except json.JSONDecodeError as e:
+                  errors.append(f'{f}: Invalid JSON - {e}')
+                  print(f'  ✗ {f}: Invalid JSON')
+              except ValidationError as e:
+                  errors.append(f'{f}: {e.message}')
+                  print(f'  ✗ {f}: {e.message}')
+
+          if errors:
+              print(f'\n{len(errors)} validation error(s):')
+              for e in errors:
+                  print(f'  - {e}')
+              sys.exit(1)
+          else:
+              print(f'\nAll {len(files)} files valid.')
+          "
+
+      - name: Check for required providers
+        run: |
+          python3 -c "
+          import glob, os, sys
+
+          REQUIRED = [
+              'aws-s3', 'google-cloud-storage', 'azure-blob-storage',
+              'cloudflare-r2', 'tigris', 'backblaze-b2', 'wasabi',
+              'digitalocean-spaces', 'minio', 'storj', 'hetzner',
+              'oracle-cloud', 'scaleway', 'vultr', 'akamai-linode',
+              'idrive-e2', 'ovhcloud', 'ibm-cloud', 'nebius',
+              'impossible-cloud', 'fastly'
+          ]
+
+          existing = {os.path.splitext(os.path.basename(f))[0] for f in glob.glob('data/providers/*.json')}
+          missing = [p for p in REQUIRED if p not in existing]
+
+          if missing:
+              print(f'Missing required providers: {missing}')
+              sys.exit(1)
+          print(f'All {len(REQUIRED)} required providers present.')
+          "
