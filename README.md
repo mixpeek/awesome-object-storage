@@ -19,9 +19,13 @@ This list covers **21 providers** across hyperscalers, alternatives, edge/CDN-na
 - [The Gotchas Nobody Tells You](#the-gotchas-nobody-tells-you)
 - [Cost Cheat Sheet](#cost-cheat-sheet)
 - [Decision Framework](#decision-framework)
+- [Architecture Patterns](#architecture-patterns)
+- [What Happens When You Outgrow Your Provider](#what-happens-when-you-outgrow-your-provider)
 - [Tools & Libraries](#tools--libraries)
 - [Benchmarks & Research](#benchmarks--research)
+- [Real-World References](#real-world-references)
 - [Migration Guides](#migration-guides)
+- [Changelog](#changelog)
 - [Contributing](#contributing)
 
 ---
@@ -166,6 +170,118 @@ Opinionated recommendations. Your mileage may vary, but these are defensible sta
 
 ---
 
+## Architecture Patterns
+
+How companies actually use object storage — the patterns that turn a pricing decision into an architecture decision.
+
+### Origin-Behind-CDN (Media Serving)
+
+Store originals in object storage, serve via CDN. The CDN caches at the edge, your origin serves cache misses.
+
+- **Classic**: S3 → CloudFront (tight IAM integration, signed URLs)
+- **Zero-egress**: R2 → Cloudflare CDN (no origin egress fees at all), Fastly Object Storage → Fastly CDN
+- **Hybrid**: B2 → Cloudflare CDN via [Bandwidth Alliance](https://www.cloudflare.com/bandwidth-alliance/) (free egress from B2 to Cloudflare)
+- **Edge-native**: Tigris (data automatically cached at edges closest to users — no separate CDN needed)
+
+**When it matters**: Video streaming, image-heavy apps, static sites. Egress is your #1 cost driver. A 10 TB/mo media workload on S3+CloudFront costs ~$900/mo in egress alone; R2 costs $0.
+
+### Data Lake on Object Storage
+
+Object storage as the foundation for analytics — store everything, query in place.
+
+- **AWS**: S3 → [Apache Iceberg](https://iceberg.apache.org/) → Athena/Spark/Trino. The reference architecture. S3 Tables (managed Iceberg) launched 2024.
+- **GCP**: GCS → [BigLake](https://cloud.google.com/biglake) → BigQuery. Native Iceberg/Delta/Hudi support.
+- **Azure**: ADLS Gen2 (Blob Storage with hierarchical namespace) → Synapse/Databricks. Note: ADLS Gen2 is a separate opt-in, not default Blob Storage.
+- **Self-hosted**: MinIO → Spark/Trino → Iceberg. Full control, no vendor lock-in. [MinIO + Iceberg guide](https://blog.min.io/minio-and-apache-iceberg/).
+- **Budget**: IDrive e2 or Storj as cold data lake storage ($0.004/GB/mo) with Spark reading via S3A connector.
+
+**Key insight**: Your storage choice constrains your analytics options. AWS has the richest query ecosystem (Athena, Redshift Spectrum, EMR). GCS has the tightest BigQuery integration. Everything else needs you to bring your own compute.
+
+### Backup 3-2-1 Strategy
+
+Three copies, two different media, one offsite. Object storage is your offsite copy.
+
+- **Enterprise**: Production on S3 → replicate to B2 or Wasabi ($0.005–$0.006/GB/mo, 4–10× cheaper than S3)
+- **Compliance**: S3 with Object Lock (WORM) for SEC 17a-4, HIPAA, or SOX compliance. Also: IBM COS, Azure Blob (immutable storage).
+- **Budget**: [rclone sync](https://rclone.org/commands/rclone_sync/) from any provider to any other. Cron job + rclone = $0 orchestration cost.
+- **Gotcha**: Wasabi's 90-day minimum means your "backup" costs are locked even if you restore and delete early. B2 or IDrive e2 have no minimum.
+
+### Object-Storage-Native Search & AI
+
+Using object storage as the substrate for search and AI workloads — not just as a dumb store.
+
+- **[turbopuffer](https://turbopuffer.com)**: Vector database built directly on S3. Stores vector indexes as objects. [Architecture deep-dive](https://turbopuffer.com/blog/turbopuffer).
+- **[Mixpeek](https://mixpeek.com)**: Connect your S3-compatible bucket → automatically extract, index, and search across video, images, audio, and documents. Works with any provider listed here.
+- **[LanceDB](https://lancedb.com)**: Serverless vector database using Lance format on object storage.
+- **Pattern**: Upload files to bucket → event trigger → extract embeddings → store in vector index on object storage → query via API. No separate database infrastructure.
+
+### Event-Driven Processing
+
+Upload an object → trigger processing automatically.
+
+| Provider | Trigger Mechanism | Latency | Notes |
+|----------|-------------------|---------|-------|
+| AWS S3 | Lambda, SQS, SNS, EventBridge | < 1s | Most mature. EventBridge for cross-account. |
+| GCS | Pub/Sub, Eventarc, Cloud Functions | < 1s | Eventarc for unified eventing. |
+| R2 | Workers (event handler) | < 100ms | Runs at edge. Fastest cold start. |
+| Tigris | Webhooks | < 1s | Webhooks to any HTTP endpoint. |
+| B2 | Event Notifications (webhooks) | ~ 1–5s | Newer feature. |
+| MinIO | Webhooks, AMQP, Kafka, NATS, Redis | < 1s | Most notification targets of any provider. |
+
+**Anti-pattern**: Polling for new objects. Every provider above supports push-based notifications. If yours doesn't (Wasabi, IDrive e2, Vultr), consider a proxy layer or switch providers for event-heavy workloads.
+
+---
+
+## What Happens When You Outgrow Your Provider
+
+The most important number nobody compares: **what does it cost to leave?**
+
+### Egress Cost to Move 100 TB
+
+| Provider | Egress Rate | Cost to Move 100 TB | Time (1 Gbps) | Escape Difficulty |
+|----------|-------------|---------------------|---------------|-------------------|
+| AWS S3 | $0.09/GB | **$9,000** | ~9 days | Hard (golden handcuffs) |
+| GCS | $0.12/GB | **$12,000** | ~9 days | Hard (highest egress) |
+| Azure Blob | $0.087/GB | **$8,700** | ~9 days | Hard |
+| IBM COS | $0.09/GB | **$9,000** | ~9 days | Hard |
+| Oracle Cloud | $0.0085/GB | **$850** | ~9 days | Moderate (10 TB free) |
+| Backblaze B2 | $0.01/GB | **$1,000** | ~9 days | Easy |
+| Hetzner | $0.01/GB | **$1,000** | ~9 days | Easy |
+| Scaleway | $0.01/GB | **$1,000** | ~9 days | Easy |
+| Cloudflare R2 | $0 | **$0** | ~9 days | **Trivial** |
+| Tigris | $0 | **$0** | ~9 days | **Trivial** |
+| Fastly | $0 | **$0** | ~9 days | **Trivial** |
+| OVHcloud | $0 | **$0** | ~9 days | **Trivial** |
+| Wasabi | $0* | **$0*** | ~9 days | Easy* (reasonable use) |
+| IDrive e2 | $0* | **$0*** | ~9 days | Easy* (reasonable use) |
+| Impossible Cloud | $0 | **$0** | ~9 days | **Trivial** |
+| Storj | $0.007/GB | **$700** | ~9 days | Easy |
+| MinIO | $0 | **$0** | Your infra | **Trivial** (you own it) |
+
+*Wasabi/IDrive: "free" egress subject to reasonable use policy. Migrating 100 TB may exceed the policy threshold. Contact sales first.*
+
+### Migration Playbook
+
+1. **Audit**: Run S3 inventory or `rclone size` to know exactly what you have — object count, total size, size distribution.
+2. **Dual-write**: Point new writes to the new provider. Old data stays put temporarily.
+3. **Backfill**: Use [rclone sync](https://rclone.org/commands/rclone_sync/) or [s5cmd](https://github.com/peak/s5cmd) for parallel transfer. s5cmd is ~10x faster than `aws s3` for bulk ops.
+4. **Verify**: `rclone check` to verify checksums match between source and destination.
+5. **Cut over**: Update your application config to point to the new provider. Keep old data for 30 days as insurance.
+
+**Provider-specific tools**:
+- **To R2**: [Cloudflare Super Slurper](https://developers.cloudflare.com/r2/data-migration/super-slurper/) — managed migration, no egress charges from AWS/GCS/Azure.
+- **To B2**: [Backblaze Universal Data Migration](https://www.backblaze.com/cloud-storage/solutions/data-migration) — free inbound, assisted migration.
+- **To any S3-compatible**: `rclone sync source:bucket dest:bucket --transfers 32 --checkers 64` (tune for your bandwidth).
+
+### Real Migration War Stories
+
+- **Why Notion moved to turbopuffer (on S3)**: Needed vector search that scales with their data without managing infrastructure. [turbopuffer architecture](https://turbopuffer.com/blog/turbopuffer).
+- **Why Cloudflare built R2**: Tired of paying AWS egress. Built their own to eliminate the "egress tax." [R2 announcement](https://blog.cloudflare.com/introducing-r2-object-storage/).
+- **Wasabi's 90-day trap**: Multiple HN threads from users who discovered the minimum retention policy after migrating. [HN discussion](https://news.ycombinator.com/item?id=36580796).
+- **B2 + Cloudflare = free egress**: The Bandwidth Alliance partnership means B2 → Cloudflare CDN egress is $0. [B2 + Cloudflare guide](https://www.backblaze.com/docs/cloud-storage-deliver-public-backblaze-b2-content-through-cloudflare-cdn).
+
+---
+
 ## Tools & Libraries
 
 ### CLI & Transfer
@@ -227,6 +343,40 @@ Opinionated recommendations. Your mileage may vary, but these are defensible sta
 
 ---
 
+## Real-World References
+
+What real engineers say about these providers — blog posts, HN threads, and production experience reports.
+
+### AWS S3
+- [S3 cost optimization at scale](https://www.vantage.sh/blog/s3-cost-optimization) — Vantage's guide to reducing S3 bills
+- [S3 performance characteristics (dvassallo)](https://github.com/dvassallo/s3-benchmark) — throughput benchmarks from different instance types
+
+### Cloudflare R2
+- [Why we built R2](https://blog.cloudflare.com/introducing-r2-object-storage/) — Cloudflare's case against the egress tax
+- [R2 in production: Unsplash](https://unsplash.com/blog/cloudflare-r2-and-images/) — how Unsplash migrated to R2
+
+### Backblaze B2
+- [B2 + Cloudflare CDN setup](https://www.backblaze.com/docs/cloud-storage-deliver-public-backblaze-b2-content-through-cloudflare-cdn) — zero-egress media serving
+- [B2 vs S3 cost comparison](https://www.backblaze.com/blog/b2-vs-s3-pricing/) — real numbers from Backblaze
+
+### MinIO
+- [MinIO architecture deep-dive](https://blog.min.io/minio-architecture/) — how erasure coding and distributed mode work
+- [Running MinIO at scale](https://blog.min.io/minio-10-tib-per-sec-benchmark/) — 21+ TiB/s benchmark results
+
+### Wasabi
+- [Wasabi minimum retention policy](https://news.ycombinator.com/item?id=36580796) — HN thread on the 90-day gotcha
+- [Wasabi vs B2 for backup](https://www.reddit.com/r/DataHoarder/comments/14s8kfg/) — r/DataHoarder community comparison
+
+### Storj
+- [How Storj decentralized storage works](https://www.storj.io/blog/what-is-decentralized-storage) — architecture overview
+- [Storj + rclone performance](https://forum.storj.io/t/rclone-performance-tips/) — community performance tuning guide
+
+### General / Multi-Provider
+- [turbopuffer: building a search engine on S3](https://turbopuffer.com/blog/turbopuffer) — excellent analysis of S3 cost structure and access patterns
+- [Object storage cost calculator (Vantage)](https://www.vantage.sh/) — multi-cloud cost comparison tool
+
+---
+
 ## Migration Guides
 
 Moving between providers is less painful than it used to be, but there are still sharp edges:
@@ -237,6 +387,26 @@ Moving between providers is less painful than it used to be, but there are still
 - **[AWS S3 Batch Operations](https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops.html)** -- For large-scale operations within AWS (copying, tagging, restoring from Glacier).
 
 **Key tip**: Always verify object integrity after migration. Use `rclone check` or compare ETags (but note that ETag calculation differs across providers for multipart uploads).
+
+---
+
+## Changelog
+
+What changed recently in the object storage landscape. See [`data/CHANGELOG.md`](./data/CHANGELOG.md) for detailed per-provider updates.
+
+### Q1 2026
+- **OVHcloud**: Dropped all egress fees (January 2026). Genuinely free, no fair-use policy.
+- **Tigris**: Added Archive Instant and Archive tiers, expanding from 2 to 4 storage classes.
+- **Cloudflare R2**: Added Infrequent Access tier ($0.01/GB/mo, 30-day minimum).
+- **AWS S3**: S3 Tables (managed Apache Iceberg) reached GA.
+- **Oracle Cloud**: Expanded to 46 regions, now the largest region footprint among hyperscalers.
+- **Fastly**: Object Storage entered general availability (launched late 2024, stabilized Q1 2026).
+
+### Q4 2025
+- **AWS**: Cut egress prices and increased free tier to 100 GB/mo (from 1 GB).
+- **Backblaze B2**: Added EU-Central region (Frankfurt), now 3 regions total.
+- **Storj**: Reached 25,000+ storage node operators globally.
+- **Impossible Cloud**: Launched US-East region, expanding beyond EU.
 
 ---
 
