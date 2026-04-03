@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "akamai-linode",
+  "name": "Akamai / Linode",
+  "type": "alternative",
+  "url": "https://www.linode.com/products/object-storage/",
+  "verified": "Mar 2026",
+  "bestFor": ["startup", "media"],
+  "migrationEase": "High (S3 compatible)",
+  "gotchas": "⚠️ Max object 5 GB. $5/mo minimum. Egress pooled with Linode network transfer (can be confusing). No object lock.",
+  "pricing": {
+    "storageStd": 0.020,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null,
+    "egressPerGB": 0.005,
+    "egressFree": "Shared with Linode transfer pool",
+    "putPer1k": null,
+    "getPer1k": null,
+    "retrievalFee": "None",
+    "minRetention": "None",
+    "billing": "Monthly ($5/mo minimum)",
+    "freeTier": "$5/mo = 250 GB storage"
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Standard (single tier)",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": false,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "Moderate"
+  },
+  "infrastructure": {
+    "durability": "Not published",
+    "availSLA": "99.9%",
+    "regions": 12,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~20–50 ms",
+    "ttfbP99": "~100–200 ms",
+    "throughput": "~50 MB/s",
+    "reqLimitGET": "750 req/s",
+    "reqLimitPUT": "150 req/s",
+    "throttle": "429 Too Many Requests"
+  },
+  "limits": {
+    "maxBuckets": "1,000",
+    "maxObjSize": "⚠️ 5 GB",
+    "maxMetaKB": "Not published"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": null,
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": false,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": false,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "Akamai CDN (native integration)",
+    "staticHost": true,
+    "transferAccel": false,
+    "nativeCompute": "Linode instances, LKE",
+    "nativeAnalytics": "None"
+  }
+}

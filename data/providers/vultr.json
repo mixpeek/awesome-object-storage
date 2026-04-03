@@ -1,0 +1,97 @@
+{
+  "$schema": "../schema.json",
+  "id": "vultr",
+  "name": "Vultr",
+  "type": "alternative",
+  "url": "https://www.vultr.com/products/object-storage/",
+  "verified": "Mar 2026",
+  "bestFor": [
+    "startup"
+  ],
+  "migrationEase": "High (S3 compatible)",
+  "gotchas": "⚠️ Max object 5 GB. No lifecycle management. No object lock. No server-side encryption. Durability SLA not published.",
+  "pricing": {
+    "egressPerGB": 0.01,
+    "egressFree": "1 TB/mo included in $5 base",
+    "putPer1k": 0.005,
+    "getPer1k": 0.0004,
+    "retrievalFee": "None",
+    "minRetention": "None",
+    "billing": "Monthly ($5/mo minimum)",
+    "freeTier": "$5/mo = 1 TB storage + 1 TB transfer",
+    "storageStd": 0.006,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Standard (single tier)",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": false,
+    "objectLock": false,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "Partial — no lifecycle, no object lock, no SSE"
+  },
+  "infrastructure": {
+    "durability": "Not published",
+    "availSLA": "99.9%",
+    "regions": 4,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~20–50 ms",
+    "ttfbP99": "~100–200 ms",
+    "throughput": "~50 MB/s",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Soft limits"
+  },
+  "limits": {
+    "maxBuckets": "Not published",
+    "maxObjSize": "⚠️ 5 GB",
+    "maxMetaKB": "Not published"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": null,
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": false,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": false,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": false
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": false,
+    "iso27001": false,
+    "gdpr": false
+  },
+  "ecosystem": {
+    "cdn": "None",
+    "staticHost": false,
+    "transferAccel": false,
+    "nativeCompute": "Vultr Cloud Compute",
+    "nativeAnalytics": "None"
+  }
+}

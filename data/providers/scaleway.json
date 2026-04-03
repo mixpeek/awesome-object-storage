@@ -1,0 +1,98 @@
+{
+  "$schema": "../schema.json",
+  "id": "scaleway",
+  "name": "Scaleway",
+  "type": "alternative",
+  "url": "https://www.scaleway.com/en/object-storage/",
+  "verified": "Mar 2026",
+  "bestFor": [
+    "backup",
+    "startup"
+  ],
+  "migrationEase": "High (S3 compatible)",
+  "gotchas": "EU only (France, Netherlands, Poland). 60d min IA retention, 90d Glacier. GET ops same price as PUT ($0.0044) — unusual.",
+  "pricing": {
+    "egressPerGB": 0.01,
+    "egressFree": "75 GB/mo free external",
+    "putPer1k": 0.0044,
+    "getPer1k": 0.0044,
+    "retrievalFee": "$0.009/GB Glacier restore",
+    "minRetention": "60d IA; 90d Glacier",
+    "billing": "Per-hour",
+    "freeTier": "75 GB storage free",
+    "storageStd": 0.012,
+    "storageIA": 0.004,
+    "storageArchive": 0.002,
+    "storageDeep": null
+  },
+  "features": {
+    "tiers": 3,
+    "tierNames": "Standard, One Zone IA, Glacier",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "High"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.9%",
+    "regions": 3,
+    "geoNA": false,
+    "geoEU": true,
+    "geoAPAC": false,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~15–30 ms (EU)",
+    "ttfbP99": "~50–100 ms (EU)",
+    "throughput": "~100 MB/s",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Soft limits"
+  },
+  "limits": {
+    "maxBuckets": "100",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "2 KB"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": null,
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": true,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": false,
+    "hipaa": false,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "None native",
+    "staticHost": true,
+    "transferAccel": false,
+    "nativeCompute": "Scaleway Instances, K8s Kapsule",
+    "nativeAnalytics": "None"
+  }
+}

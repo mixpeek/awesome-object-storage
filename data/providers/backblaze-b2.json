@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "backblaze-b2",
+  "name": "Backblaze B2",
+  "type": "alternative",
+  "url": "https://www.backblaze.com/cloud-storage",
+  "verified": "Apr 2026",
+  "bestFor": ["backup", "media"],
+  "migrationEase": "High (S3 compat + Universal Migration)",
+  "gotchas": "Only 3 regions (US-West, US-East, EU-Central). No cold/archive tiers — everything is always-hot. 100 bucket limit.",
+  "pricing": {
+    "storageStd": 0.006,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null,
+    "egressPerGB": 0.01,
+    "egressFree": "3× your storage volume/mo free",
+    "putPer1k": 0.004,
+    "getPer1k": 0.0004,
+    "retrievalFee": "None — always hot",
+    "minRetention": "None",
+    "billing": "Daily average",
+    "freeTier": "10 GB forever"
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Standard (always hot)",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": true,
+    "notifyFormat": "Webhooks",
+    "s3Compat": "Full",
+    "apiDepth": "High (core S3 + B2 native API)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.9%",
+    "regions": 3,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": false,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~20–40 ms",
+    "ttfbP99": "~80–150 ms",
+    "throughput": "~50–100 MB/s",
+    "reqLimitGET": "Unlimited (fair use)",
+    "reqLimitPUT": "Unlimited (fair use)",
+    "throttle": "Soft limits, contact for enterprise"
+  },
+  "limits": {
+    "maxBuckets": "100",
+    "maxObjSize": "10 TB",
+    "maxMetaKB": "10 KB (b2 file info)"
+  },
+  "dataProtection": {
+    "replication": true,
+    "replRPO": "Variable",
+    "softDelete": false,
+    "legalHold": true,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": false,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": true,
+    "sseC": false,
+    "encryptDefault": false
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": false,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "Cloudflare via Bandwidth Alliance (free egress)",
+    "staticHost": false,
+    "transferAccel": false,
+    "nativeCompute": "None (partner ecosystem)",
+    "nativeAnalytics": "None"
+  }
+}

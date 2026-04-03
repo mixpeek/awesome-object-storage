@@ -1,0 +1,98 @@
+{
+  "$schema": "../schema.json",
+  "id": "oracle-cloud",
+  "name": "Oracle Cloud OCI",
+  "type": "hyperscaler",
+  "url": "https://www.oracle.com/cloud/storage/object-storage/",
+  "verified": "Mar 2026",
+  "bestFor": [
+    "backup",
+    "datalake"
+  ],
+  "migrationEase": "High (S3 Compatibility API)",
+  "gotchas": "Higher standard storage cost ($0.0255). UI/DX less polished than AWS. Smaller third-party ecosystem.",
+  "pricing": {
+    "egressPerGB": 0.0085,
+    "egressFree": "10 TB/mo free (!)",
+    "putPer1k": 0.0004,
+    "getPer1k": 0.0003,
+    "retrievalFee": "Free archive restores (!)",
+    "minRetention": "None",
+    "billing": "Per-hour",
+    "freeTier": "10 GB always free",
+    "storageStd": 0.0255,
+    "storageIA": 0.01,
+    "storageArchive": 0.0026,
+    "storageDeep": null
+  },
+  "features": {
+    "tiers": 3,
+    "tierNames": "Standard, Infrequent Access, Archive",
+    "autoTier": true,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": true,
+    "notifyFormat": "OCI Events, Functions",
+    "s3Compat": "Full",
+    "apiDepth": "High (S3 Compatibility API)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.9%",
+    "regions": 46,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": true,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~15–30 ms",
+    "ttfbP99": "~50–100 ms",
+    "throughput": "~100 MB/s",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Service limits (adjustable)"
+  },
+  "limits": {
+    "maxBuckets": "Unlimited",
+    "maxObjSize": "10 TB",
+    "maxMetaKB": "Not published"
+  },
+  "dataProtection": {
+    "replication": true,
+    "replRPO": "Variable",
+    "softDelete": false,
+    "legalHold": true,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": true,
+    "deltaIceberg": "OCI Data Flow (Spark)"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": true,
+    "sseC": true,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "None native (partner CDN)",
+    "staticHost": false,
+    "transferAccel": false,
+    "nativeCompute": "OCI Compute, Container Engine for K8s",
+    "nativeAnalytics": "Data Flow, Data Catalog"
+  }
+}

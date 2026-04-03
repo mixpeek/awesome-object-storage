@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "google-cloud-storage",
+  "name": "Google Cloud Storage",
+  "type": "hyperscaler",
+  "url": "https://cloud.google.com/storage",
+  "verified": "Apr 2026",
+  "bestFor": ["datalake", "aiml"],
+  "migrationEase": "High (S3 interop API)",
+  "gotchas": "Highest egress ($0.12/GB). S3 compat is interop layer, not native. 365-day Archive min retention.",
+  "pricing": {
+    "storageStd": 0.020,
+    "storageIA": 0.010,
+    "storageArchive": 0.0012,
+    "storageDeep": null,
+    "egressPerGB": 0.12,
+    "egressFree": "100 GB/mo free tier",
+    "putPer1k": 0.005,
+    "getPer1k": 0.0004,
+    "retrievalFee": "$0.01/GB Nearline; $0.05/GB Archive",
+    "minRetention": "30d NL; 90d CL; 365d Archive",
+    "billing": "Per-second",
+    "freeTier": "5 GB always free"
+  },
+  "features": {
+    "tiers": 4,
+    "tierNames": "Standard, Nearline, Coldline, Archive",
+    "autoTier": true,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": true,
+    "notifyFormat": "Pub/Sub, Eventarc",
+    "s3Compat": "Interop XML API",
+    "apiDepth": "High (most S3 ops)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.99%",
+    "regions": 40,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": true,
+    "edgePops": null,
+    "consistency": "Strong (global)"
+  },
+  "performance": {
+    "ttfbP50": "~30–60 ms",
+    "ttfbP99": "~100–200 ms",
+    "throughput": "~200 MB/s",
+    "reqLimitGET": "5,000/s per bucket",
+    "reqLimitPUT": "1,000/s per bucket",
+    "throttle": "429 backoff"
+  },
+  "limits": {
+    "maxBuckets": "No hard limit",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "8 KB"
+  },
+  "dataProtection": {
+    "replication": true,
+    "replRPO": "~15 min (Turbo: 0 RPO)",
+    "softDelete": true,
+    "legalHold": true,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": true,
+    "inventory": true,
+    "accessLog": true,
+    "deltaIceberg": "BigLake (Iceberg, Delta, Hudi)"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": true,
+    "sseC": true,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "Cloud CDN (native)",
+    "staticHost": true,
+    "transferAccel": false,
+    "nativeCompute": "GCE, Cloud Run, Vertex AI",
+    "nativeAnalytics": "BigQuery, Dataflow, Dataproc"
+  }
+}

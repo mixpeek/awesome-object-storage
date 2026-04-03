@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "idrive-e2",
+  "name": "IDrive e2",
+  "type": "alternative",
+  "url": "https://www.idrive.com/s3-storage-e2/",
+  "verified": "Apr 2026",
+  "bestFor": ["backup", "datalake"],
+  "migrationEase": "High (S3 compatible)",
+  "gotchas": "Free egress subject to 'reasonable use' policy (like Wasabi). Per-region unique endpoints and access keys — unusual. Smaller ecosystem.",
+  "pricing": {
+    "storageStd": 0.004,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null,
+    "egressPerGB": 0,
+    "egressFree": "Free (reasonable use policy)",
+    "putPer1k": 0,
+    "getPer1k": 0,
+    "retrievalFee": "None",
+    "minRetention": "None",
+    "billing": "Monthly",
+    "freeTier": "10 GB free"
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Hot Cloud Storage (single tier)",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "High (core S3)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.9%",
+    "regions": 10,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~15–30 ms",
+    "ttfbP99": "~80–150 ms",
+    "throughput": "~100 MB/s",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Reasonable use policy"
+  },
+  "limits": {
+    "maxBuckets": "Not published",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "Not published"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": null,
+    "softDelete": false,
+    "legalHold": true,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": false,
+    "deltaIceberg": "Hadoop S3A connector"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": false,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "None built-in",
+    "staticHost": false,
+    "transferAccel": false,
+    "nativeCompute": "None",
+    "nativeAnalytics": "None"
+  }
+}

@@ -1,0 +1,255 @@
+# Awesome Object Storage [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+
+> A curated, opinionated guide to S3-compatible object storage — pricing, features, gotchas, and tools.
+>
+> **[Interactive comparison tool](https://storage.mixpeek.com)** | Maintained by [Mixpeek](https://mixpeek.com)
+
+## Why This Exists
+
+Choosing object storage looks simple until you're comparing 7 pricing dimensions, hidden retention policies, and "S3-compatible" claims that break on multipart uploads. We built this because we got tired of finding out about Wasabi's 90-day minimum retention policy AFTER migrating 50 TB.
+
+This list covers **21 providers** across hyperscalers, alternatives, edge/CDN-native, self-hosted, and decentralized options. Every claim is sourced. Every gotcha is real. PRs welcome.
+
+---
+
+## Contents
+
+- [Quick Comparison](#quick-comparison)
+- [Provider Profiles](#provider-profiles)
+- [The Gotchas Nobody Tells You](#the-gotchas-nobody-tells-you)
+- [Cost Cheat Sheet](#cost-cheat-sheet)
+- [Decision Framework](#decision-framework)
+- [Tools & Libraries](#tools--libraries)
+- [Benchmarks & Research](#benchmarks--research)
+- [Migration Guides](#migration-guides)
+- [Contributing](#contributing)
+
+---
+
+## Quick Comparison
+
+All prices are list prices in USD as of Q1 2026. Storage is per GB/month (standard/hot tier). Egress is per GB after free allowance. "S3 Compat" means the provider supports the S3 API — see [the compatibility spectrum](#s3-compatible-is-a-spectrum) for what that actually means.
+
+| Provider | Storage $/GB/mo | Egress $/GB | Free Egress | Tiers | Max Object | S3 Compat | Object Lock | Versioning | Gotcha |
+|---|---|---|---|---|---|---|---|---|---|
+| [AWS S3](https://aws.amazon.com/s3/pricing/) | $0.023 | $0.09 | 100 GB/mo | 6 | 5 TB | Native | Yes | Yes | Egress adds up fast |
+| [Google Cloud Storage](https://cloud.google.com/storage/pricing) | $0.020 | $0.12 | 100 GB/mo | 4 | 5 TB | [Interop](https://cloud.google.com/storage/docs/interoperability) | Yes | Yes | Highest egress of the big 3 |
+| [Azure Blob](https://azure.microsoft.com/en-us/pricing/details/storage/blobs/) | $0.018 | $0.087 | 100 GB/mo | 4 | 4.77 TB | [Preview](https://learn.microsoft.com/en-us/azure/storage/blobs/s3-compatible-api) | Yes | Yes | Native API is not S3 — interop layer is preview |
+| [Cloudflare R2](https://developers.cloudflare.com/r2/pricing/) | $0.015 | $0 | Unlimited | 2 | 5 TB | [Full](https://developers.cloudflare.com/r2/api/s3/) | No | No | No versioning, no object lock |
+| [Tigris](https://www.tigrisdata.com/docs/pricing/) | $0.020 | $0 | Unlimited | 4 | 5 TB | [Full](https://www.tigrisdata.com/docs/api/) | Yes | Yes | Newer service, some limits TBD |
+| [Backblaze B2](https://www.backblaze.com/cloud-storage/pricing) | $0.006 | $0.01 | 3x storage | 1 | 10 TB | [Full](https://www.backblaze.com/docs/cloud-storage-s3-compatible-api) | Yes | Yes | Only 3 regions (US-West, US-East, EU-Central) |
+| [Wasabi](https://wasabi.com/pricing) | $0.0049 | $0* | Reasonable use | 1 | 5 TB | [Full](https://docs.wasabi.com/docs/what-are-the-service-urls-for-wasabis-different-storage-regions) | Yes | Yes | 90-day minimum retention — you pay even if you delete early |
+| [DigitalOcean Spaces](https://www.digitalocean.com/pricing/spaces) | $0.020 | $0.01 | 1 TB/mo | 1 | 5 GB | [Full](https://docs.digitalocean.com/products/spaces/) | No | Yes | Max object size is 5 GB, not 5 TB |
+| [MinIO](https://min.io/) | Self-host | Self-host | N/A | ILM | 5 TB | [Full](https://min.io/product/s3-compatibility) | Yes | Yes | AGPL-3.0 — you run and maintain everything |
+| [Storj](https://www.storj.io/pricing) | $0.004 | $0.007 | None | 1 | Unlimited | [Full](https://docs.storj.io/dcs/api-reference/s3-compatible-gateway) | Yes | Yes | Per-segment fees on small files; claims 11 nines durability |
+| [Hetzner Object Storage](https://www.hetzner.com/storage/object-storage/) | $0.0052 | $0.01 | 1 TB internal | 1 | 5 TB | [Full](https://docs.hetzner.com/storage/object-storage/overview/) | Yes | Yes | EU-only regions |
+| [Oracle Cloud Object Storage](https://www.oracle.com/cloud/storage/pricing/) | $0.0255 | $0.0085 | 10 TB/mo | 3 | 10 TB | [Full](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm) | Yes | Yes | 10 TB free egress is generous; UI is less polished |
+| [Scaleway Object Storage](https://www.scaleway.com/en/pricing/?tags=storage) | $0.012 | $0.01 | 75 GB/mo | 3 | 5 TB | [Full](https://www.scaleway.com/en/docs/storage/object/) | Yes | Yes | EU-only; unusual per-GET pricing tiers |
+| [Vultr Object Storage](https://www.vultr.com/pricing/#object-storage) | $0.006 | $0.01 | 1 TB/mo | 1 | 5 GB | [Full](https://www.vultr.com/docs/vultr-object-storage/) | No | Yes | No SSE, durability not published, 5 GB max object |
+| [Akamai/Linode Object Storage](https://www.linode.com/pricing/#object-storage) | $0.020 | $0.005 | Transfer pool | 1 | 5 GB | [Full](https://techdocs.akamai.com/cloud-computing/docs/object-storage) | No | Yes | Max object 5 GB — no multipart above that |
+| [IDrive e2](https://www.idrive.com/e2/pricing) | $0.004 | $0* | Reasonable use | 1 | 5 TB | [Full](https://www.idrive.com/e2/s3-compatible-api) | Yes | Yes | Unique per-region access keys (no global key) |
+| [OVHcloud Object Storage](https://www.ovhcloud.com/en/public-cloud/object-storage/) | $0.007 | $0 | Free (Jan 2026) | 4 | 5 TB | [Full](https://docs.ovh.com/gb/en/storage/object-storage/s3/) | Yes | Yes | 30-day minimum retention on all tiers |
+| [IBM Cloud Object Storage](https://www.ibm.com/cloud/object-storage/pricing) | $0.022 | $0.09 | One-Rate plan | 5 | 10 TB | [Full](https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-compatibility-api) | Yes | Yes | Complex pricing with Smart Tier, One-Rate, and Standard |
+| [Nebius Object Storage](https://nebius.com/services/storage) | $0.0164 | $0.01 | Free internal | 4 | 5 TB | [Full](https://docs.nebius.com/storage/s3/) | Yes | Yes | EU-only; newer brand (Yandex Cloud spinoff) |
+| [Impossible Cloud](https://impossiblecloud.com/pricing) | $0.006 | $0 | Free | 1 | 5 TB | [Full](https://docs.impossiblecloud.com/) | Yes | Yes | Newer, EU-focused, limited track record |
+| [Fastly Object Storage](https://www.fastly.com/products/storage) | $0.012 | $0 | Included w/ CDN | 1 | 5 TB | [Full](https://docs.fastly.com/en/storage/) | No | No | Newer product, fewer features than mature providers |
+
+`$0*` = Free egress with "reasonable use" policy — typically means egress cannot exceed storage volume. Check the provider's terms.
+
+---
+
+## Provider Profiles
+
+Detailed profiles with full feature matrices, pricing breakdowns, and source links for each provider are in the [`data/providers/`](data/providers/) directory.
+
+---
+
+## The Gotchas Nobody Tells You
+
+### Egress "Free" Doesn't Always Mean Free
+
+Cloudflare R2 and Tigris genuinely offer unlimited free egress — there's no asterisk. But several providers advertise "free egress" with strings attached:
+
+- **Wasabi**: Egress is free only if your monthly egress doesn't exceed your stored volume. Transfer 2x what you store and you'll get a call from their sales team, or see your account flagged. Their [pricing FAQ](https://wasabi.com/pricing) calls this "reasonable use."
+- **IDrive e2**: Same model as Wasabi — egress is free under a "reasonable use" policy. The threshold isn't publicly defined with precision.
+- **OVHcloud**: Made egress free in January 2026, but the 30-day minimum retention still applies to all tiers — delete early, pay anyway.
+- **Backblaze B2**: 3x your stored volume is free. Beyond that, $0.01/GB. Generous for most workloads, but media streaming will blow through it.
+
+**Bottom line**: If your workload is egress-heavy (CDN origin, ML training data distribution, media streaming), only R2, Tigris, Fastly, and Impossible Cloud offer truly unlimited free egress without caveats.
+
+### Minimum Retention Will Burn You
+
+This is the gotcha that costs real money and nobody reads the fine print:
+
+- **Wasabi**: 90-day minimum retention. Delete an object after 30 days? You still pay for 90. This is per-object, not per-account. On a 50 TB dataset with churn, this can double your effective cost. ([Source](https://wasabi.com/pricing))
+- **OVHcloud**: 30-day minimum on **all** storage tiers, including Standard. Not just archive. ([Source](https://www.ovhcloud.com/en/public-cloud/object-storage/))
+- **AWS S3 Glacier Instant Retrieval**: 90-day minimum. Glacier Deep Archive: 180-day minimum. S3 Standard has no minimum. ([Source](https://aws.amazon.com/s3/pricing/))
+- **GCS Nearline**: 30-day minimum. Coldline: 90 days. Archive: 365 days. ([Source](https://cloud.google.com/storage/pricing#archival-pricing))
+
+**Rule of thumb**: If you're storing data with high churn (temp files, build artifacts, ephemeral ML checkpoints), avoid any provider with minimum retention. Use R2, B2, Hetzner, or standard-tier hyperscaler storage.
+
+### "S3 Compatible" Is a Spectrum
+
+Every provider on this list claims S3 compatibility. In practice, compatibility ranges from "passes the full AWS S3 test suite" to "supports GET and PUT on a good day." Here's what actually varies:
+
+- **Multipart uploads**: Most support it. DigitalOcean Spaces, Vultr, and Linode cap objects at 5 GB, which means multipart is capped too.
+- **Object Lock / WORM**: R2, Fastly, Vultr, DigitalOcean Spaces, and Linode do not support it. If you need immutable backups for compliance, check before migrating.
+- **Versioning**: R2 and Fastly don't support it. If your application depends on versioned objects, these are not drop-in replacements.
+- **Server-Side Encryption (SSE)**: Vultr doesn't support SSE. Others vary between SSE-S3, SSE-KMS, and SSE-C.
+- **Presigned URLs**: Generally work everywhere, but edge cases around expiration and regional endpoints can bite you on smaller providers.
+- **Bucket notifications / Event Grid**: Only AWS, GCS (via Pub/Sub), and MinIO support S3-style event notifications. Most alternatives don't.
+- **Select / Query**: S3 Select and similar in-place query features are largely AWS-only. Storj, MinIO have partial support.
+
+**Test before migrating**. Run your actual application against the target provider's S3 endpoint. Don't trust the compatibility page — trust your integration tests.
+
+### Durability Is Not Identical
+
+AWS S3 quotes 99.999999999% (11 nines) durability. Most providers quote similar numbers. But the engineering behind those numbers varies enormously:
+
+- **Hyperscalers (AWS, GCS, Azure)**: Data is replicated across multiple availability zones within a region, with independent power and networking. This is battle-tested at exabyte scale.
+- **Storj**: Uses erasure coding across a global network of independent storage nodes. Claims 11 nines. The architecture is genuinely different — your data is sharded across thousands of nodes, so no single datacenter failure loses data.
+- **Backblaze B2**: Replicates within a single datacenter with Reed-Solomon erasure coding. Published [durability data](https://www.backblaze.com/blog/cloud-storage-durability/) openly.
+- **Vultr, DigitalOcean Spaces, Linode**: Durability numbers are either not published or vaguely stated. This doesn't mean the data is unsafe, but you're trusting without verification.
+- **Hetzner, Scaleway, OVHcloud**: European providers with solid infrastructure, but fewer regions means fewer geographic redundancy options.
+
+**If durability is critical** (healthcare, legal, financial records), stick with providers that publish verifiable durability data and offer cross-region replication. Or replicate across providers yourself using [rclone](https://rclone.org/).
+
+---
+
+## Cost Cheat Sheet
+
+Real-world monthly cost for a common workload: **10 TB stored, 5 TB egress/month, 10M GET requests, 1M PUT requests**.
+
+| Provider | Storage | Egress | GETs | PUTs | **Total/mo** |
+|---|---|---|---|---|---|
+| IDrive e2 | $40 | $0* | $1 | $5 | **~$46** |
+| Storj | $40 | $35 | $1 | $5 | **~$81** |
+| Wasabi | $49 | $0* | $0 | $0 | **~$49** |
+| Backblaze B2 | $60 | $20 | $4 | $5 | **~$89** |
+| Cloudflare R2 | $150 | $0 | $3.60 | $4.50 | **~$158** |
+| OVHcloud | $70 | $0 | $1 | $5 | **~$76** |
+| Hetzner | $52 | $40 | $1 | $5 | **~$98** |
+| AWS S3 | $230 | $450 | $4 | $5 | **~$689** |
+| GCS | $200 | $600 | $4 | $5 | **~$809** |
+
+Notes:
+- `$0*` means subject to reasonable-use egress policy. If your egress exceeds storage volume, costs may apply.
+- Wasabi includes requests in storage pricing — no per-request fees.
+- AWS and GCS prices are dramatically higher because of egress. If you're serving data to the internet, this is the line item that matters.
+- R2 is expensive on storage but free on egress — the crossover point vs. B2 depends on your egress ratio.
+
+---
+
+## Decision Framework
+
+Opinionated recommendations. Your mileage may vary, but these are defensible starting points:
+
+**I need the cheapest storage with minimal egress** -- Use [Storj](https://www.storj.io/) ($0.004/GB) or [IDrive e2](https://www.idrive.com/e2/) ($0.004/GB). Both are S3-compatible with reasonable feature sets. Storj's per-segment fee penalizes lots of tiny files.
+
+**I need zero egress fees, period** -- Use [Cloudflare R2](https://developers.cloudflare.com/r2/). No egress fees, no asterisks, no "reasonable use" policy. Trade-off: no versioning, no object lock.
+
+**I need zero egress AND versioning/object lock** -- Use [Tigris](https://www.tigrisdata.com/) or [Impossible Cloud](https://impossiblecloud.com/). Both offer free egress with more features than R2, though they're newer services.
+
+**I need a CDN origin** -- Use [Cloudflare R2](https://developers.cloudflare.com/r2/) (native Cloudflare CDN integration) or [Fastly Object Storage](https://www.fastly.com/products/storage) (native Fastly CDN). Eliminates the origin-to-CDN egress that kills your bill with AWS.
+
+**I need compliance / immutable backups** -- Use [AWS S3 Object Lock](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html) (WORM compliance, SEC 17a-4 verified) or [Wasabi](https://wasabi.com/) (also supports Object Lock, much cheaper). B2 Object Lock is solid too.
+
+**I need to keep it in the EU** -- Use [Hetzner](https://www.hetzner.com/storage/object-storage/) (cheapest), [Scaleway](https://www.scaleway.com/en/object-storage/) (more features), or [OVHcloud](https://www.ovhcloud.com/en/public-cloud/object-storage/) (free egress). All are EU-headquartered with EU-only datacenters.
+
+**I need self-hosted / air-gapped** -- Use [MinIO](https://min.io/). It's the only serious self-hosted S3-compatible option. AGPL-3.0 license means you need a commercial license if you're offering it as a service. [Garage](https://garagehq.deuxfleurs.fr/) is a lighter alternative for home labs.
+
+**I need maximum durability / multi-region** -- Use [AWS S3](https://aws.amazon.com/s3/) with Cross-Region Replication, or replicate across providers with [rclone](https://rclone.org/). No shortcut here — geographic redundancy costs money.
+
+**I need the best free tier for prototyping** -- [Oracle Cloud](https://www.oracle.com/cloud/free/) gives you 10 TB free egress and 10 GB free storage. [Cloudflare R2](https://developers.cloudflare.com/r2/) gives 10 GB storage and unlimited egress free. [Backblaze B2](https://www.backblaze.com/cloud-storage) gives 10 GB free.
+
+**I'm on AWS and want to reduce costs without migrating** -- Use [S3 Intelligent-Tiering](https://aws.amazon.com/s3/storage-classes/intelligent-tiering/). It automatically moves objects between tiers based on access patterns. No retrieval fees, no minimum retention on the frequent tier. Then set up [S3 Lifecycle rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html) for data you know is cold.
+
+---
+
+## Tools & Libraries
+
+### CLI & Transfer
+
+- **[rclone](https://rclone.org/)** -- The Swiss Army knife. Supports 70+ storage backends. Use it for syncing, migrating, mounting, and encrypting. Start here.
+- **[AWS CLI](https://aws.amazon.com/cli/)** -- Works with most S3-compatible providers via `--endpoint-url`. The de facto standard.
+- **[s5cmd](https://github.com/peak/s5cmd)** -- Parallel S3 CLI written in Go. 10-50x faster than `aws s3` for bulk operations.
+- **[mc (MinIO Client)](https://min.io/docs/minio/linux/reference/minio-mc.html)** -- MinIO's CLI. Works with any S3-compatible provider, not just MinIO.
+- **[s3cmd](https://s3tools.org/s3cmd)** -- Older but reliable CLI. Good for scripting.
+
+### SDKs
+
+- **[AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)** -- Works with any S3-compatible endpoint. The lingua franca.
+- **[AWS SDK for JavaScript v3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/)** -- Modular, tree-shakeable. Use `@aws-sdk/client-s3`.
+- **[AWS SDK for Go v2](https://aws.github.io/aws-sdk-go-v2/docs/)** -- High-performance Go client.
+- **[AWS SDK for Rust](https://docs.aws.amazon.com/sdk-for-rust/latest/dg/welcome.html)** -- Official Rust SDK. Still maturing but usable.
+- **[MinIO SDKs](https://min.io/docs/minio/linux/developers/minio-drivers.html)** -- Python, JS, Go, Java, .NET, Haskell. Lighter than AWS SDKs.
+
+### Data Engineering
+
+- **[Apache Iceberg](https://iceberg.apache.org/)** -- Table format for huge analytic datasets on object storage. Works with S3, GCS, Azure.
+- **[Delta Lake](https://delta.io/)** -- Lakehouse storage layer. ACID transactions on object storage.
+- **[Apache Hudi](https://hudi.apache.org/)** -- Incremental data processing on object storage.
+- **[DuckDB](https://duckdb.org/)** -- In-process SQL engine that reads Parquet/CSV directly from S3. No cluster needed.
+- **[Polars](https://pola.rs/)** -- DataFrame library (Rust/Python) with native S3 support. Faster than Pandas for large datasets.
+
+### Migration
+
+- **[rclone](https://rclone.org/)** -- Best general-purpose migration tool. `rclone sync source:bucket dest:bucket` handles most cases.
+- **[Backblaze Super Slurper](https://www.backblaze.com/docs/cloud-storage-super-slurper)** -- Free tool for migrating into B2 from AWS, GCS, or Azure.
+- **[AWS DataSync](https://aws.amazon.com/datasync/)** -- AWS-managed transfer. Good for moving into or between AWS services.
+- **[GCS Transfer Service](https://cloud.google.com/storage-transfer-service)** -- Managed service for moving data into GCS from S3, Azure, or URLs.
+
+### Monitoring & Cost
+
+- **[Vantage](https://www.vantage.sh/)** -- Cloud cost transparency. Tracks S3 spend across providers.
+- **[Infracost](https://www.infracost.io/)** -- Cost estimates for Terraform. Shows S3 costs before you deploy.
+- **[S3 Storage Lens](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html)** -- AWS-native storage analytics. Useful for finding optimization opportunities.
+- **[CloudWatch S3 Metrics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/cloudwatch-monitoring.html)** -- Request-level metrics for AWS S3.
+
+### Intelligence & Search
+
+- **[Mixpeek](https://mixpeek.com)** -- Multimodal intelligence layer for object storage. Indexes, searches, and classifies objects (images, video, documents, audio) across any S3-compatible bucket.
+- **[Apache Tika](https://tika.apache.org/)** -- Content detection and extraction. Identifies file types and extracts text/metadata.
+- **[Amazon Rekognition](https://aws.amazon.com/rekognition/)** -- Image/video analysis for AWS S3 objects.
+- **[Google Cloud Vision](https://cloud.google.com/vision)** -- Image analysis for GCS objects.
+
+---
+
+## Benchmarks & Research
+
+- **[Tom Kleinpeter's Cloud Storage Benchmark (2024)](https://www.tomkleinpeter.com/cloud-storage-benchmark/)** -- Throughput and latency benchmarks across major providers.
+- **[Last Week in AWS - S3 Pricing](https://www.lastweekinaws.com/blog/s3-as-an-eternal-service/)** -- Corey Quinn's ongoing commentary on S3 pricing trends.
+- **[Backblaze Drive Stats](https://www.backblaze.com/cloud-storage/resources/hard-drive-test-data)** -- Backblaze publishes drive failure data quarterly. Good for understanding underlying hardware reliability.
+- **[Cloudflare R2 vs S3 Benchmark (2023)](https://blog.cloudflare.com/r2-open-beta/)** -- Cloudflare's own performance comparison. Take with appropriate salt.
+- **[Storj Performance Whitepaper](https://www.storj.io/whitepapers)** -- Architecture and performance claims for decentralized storage.
+- **[Hetzner Object Storage Review (ServeTheHome)](https://www.servethehome.com/hetzner-object-storage-review/)** -- Independent review with performance data.
+- **[Cloud Cost Handbook (Vantage)](https://handbook.vantage.sh/aws/services/s3-pricing/)** -- Detailed breakdown of S3 pricing dimensions.
+
+---
+
+## Migration Guides
+
+Moving between providers is less painful than it used to be, but there are still sharp edges:
+
+- **[rclone migration guide](https://rclone.org/s3/)** -- rclone supports every provider on this list. `rclone sync` with `--transfers 32` for parallel transfers. Start with `--dry-run`.
+- **[Backblaze Super Slurper](https://www.backblaze.com/docs/cloud-storage-super-slurper)** -- Backblaze runs the migration for you, server-side. No egress from B2's side. Fast and free.
+- **[Migrating from S3 to R2 (Cloudflare)](https://developers.cloudflare.com/r2/data-migration/sippy/)** -- Sippy is Cloudflare's incremental migration tool. It proxies reads to S3 and copies objects to R2 on first access.
+- **[AWS S3 Batch Operations](https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops.html)** -- For large-scale operations within AWS (copying, tagging, restoring from Glacier).
+
+**Key tip**: Always verify object integrity after migration. Use `rclone check` or compare ETags (but note that ETag calculation differs across providers for multipart uploads).
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on submitting corrections, adding providers, and reporting errors.
+
+Short version: edit the JSON in `data/providers/`, include a source URL for every claim, and submit a PR.
+
+---
+
+## License
+
+MIT -- use this data however you want.
+
+Maintained by [Mixpeek](https://mixpeek.com) -- multimodal intelligence for your object storage.

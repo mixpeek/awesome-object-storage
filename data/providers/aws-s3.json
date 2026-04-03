@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "aws-s3",
+  "name": "Amazon S3",
+  "type": "hyperscaler",
+  "url": "https://aws.amazon.com/s3/",
+  "verified": "Apr 2026",
+  "bestFor": ["datalake", "aiml", "backup"],
+  "migrationEase": "Reference standard",
+  "gotchas": "Egress $0.09/GB adds up fast. 7 storage classes make pricing complex. No spending caps.",
+  "pricing": {
+    "storageStd": 0.023,
+    "storageIA": 0.0125,
+    "storageArchive": 0.004,
+    "storageDeep": 0.00099,
+    "egressPerGB": 0.09,
+    "egressFree": "100 GB/mo free tier",
+    "putPer1k": 0.005,
+    "getPer1k": 0.0004,
+    "retrievalFee": "Glacier: $0.01–$0.03/GB",
+    "minRetention": "None (Std); 30d IA; 90/180d Glacier",
+    "billing": "Per-second",
+    "freeTier": "5 GB / 12 months"
+  },
+  "features": {
+    "tiers": 6,
+    "tierNames": "Standard, Intelligent-Tiering, Std-IA, 1Z-IA, Glacier IR/Flex, Deep Archive",
+    "autoTier": true,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": true,
+    "notifyFormat": "SNS, SQS, Lambda, EventBridge",
+    "s3Compat": "Native",
+    "apiDepth": "Full (reference implementation)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.99%",
+    "regions": 33,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": true,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~10–20 ms",
+    "ttfbP99": "~50–100 ms",
+    "throughput": "~100 MB/s",
+    "reqLimitGET": "5,500/s per prefix",
+    "reqLimitPUT": "3,500/s per prefix",
+    "throttle": "503 SlowDown, auto-retry"
+  },
+  "limits": {
+    "maxBuckets": "10,000",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "2 KB user metadata"
+  },
+  "dataProtection": {
+    "replication": true,
+    "replRPO": "~15 min (async CRR)",
+    "softDelete": true,
+    "legalHold": true,
+    "mfaDelete": true,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": true,
+    "batchOps": true,
+    "inventory": true,
+    "accessLog": true,
+    "deltaIceberg": "Iceberg, Delta, Hudi via Athena/Glue"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": true,
+    "sseC": true,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "CloudFront (native)",
+    "staticHost": true,
+    "transferAccel": true,
+    "nativeCompute": "EC2, Lambda, ECS, SageMaker",
+    "nativeAnalytics": "Athena, Redshift Spectrum, EMR, Glue"
+  }
+}

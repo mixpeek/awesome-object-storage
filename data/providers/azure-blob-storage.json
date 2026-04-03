@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "azure-blob-storage",
+  "name": "Azure Blob Storage",
+  "type": "hyperscaler",
+  "url": "https://azure.microsoft.com/en-us/products/storage/blobs",
+  "verified": "Apr 2026",
+  "bestFor": ["datalake", "aiml", "backup"],
+  "migrationEase": "Medium (native REST ≠ S3)",
+  "gotchas": "Native API is not S3. S3 compat endpoint still in preview. ADLS Gen2 = separate opt-in. 250 container limit.",
+  "pricing": {
+    "storageStd": 0.018,
+    "storageIA": 0.010,
+    "storageArchive": 0.00099,
+    "storageDeep": null,
+    "egressPerGB": 0.087,
+    "egressFree": "100 GB/mo free tier",
+    "putPer1k": 0.0065,
+    "getPer1k": 0.0005,
+    "retrievalFee": "$0.01/GB Cool; per-op Archive rehydration",
+    "minRetention": "180d Cold; early deletion fee on Archive",
+    "billing": "Per-second",
+    "freeTier": "5 GB / 12 months"
+  },
+  "features": {
+    "tiers": 4,
+    "tierNames": "Hot, Cool, Cold, Archive",
+    "autoTier": true,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": true,
+    "notifyFormat": "Event Grid, Functions",
+    "s3Compat": "Preview endpoint",
+    "apiDepth": "Partial (native is REST, not S3)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%+",
+    "availSLA": "99.99%",
+    "regions": 60,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": true,
+    "edgePops": null,
+    "consistency": "Strong"
+  },
+  "performance": {
+    "ttfbP50": "~10–20 ms",
+    "ttfbP99": "~50–100 ms",
+    "throughput": "~120 MB/s",
+    "reqLimitGET": "20,000/s per account",
+    "reqLimitPUT": "2,000/s per account",
+    "throttle": "503 ServerBusy"
+  },
+  "limits": {
+    "maxBuckets": "250 containers",
+    "maxObjSize": "4.77 TB (block blob)",
+    "maxMetaKB": "8 KB"
+  },
+  "dataProtection": {
+    "replication": true,
+    "replRPO": "~15 min (GRS async)",
+    "softDelete": true,
+    "legalHold": true,
+    "mfaDelete": false,
+    "pitRestore": true
+  },
+  "advancedS3": {
+    "selectQuery": true,
+    "batchOps": true,
+    "inventory": true,
+    "accessLog": true,
+    "deltaIceberg": "ADLS Gen2 (Iceberg, Delta Lake native)"
+  },
+  "security": {
+    "sseS3": false,
+    "sseKMS": true,
+    "sseC": true,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "Azure CDN / Front Door",
+    "staticHost": true,
+    "transferAccel": false,
+    "nativeCompute": "VMs, Functions, AKS",
+    "nativeAnalytics": "Synapse, Databricks, Data Factory"
+  }
+}

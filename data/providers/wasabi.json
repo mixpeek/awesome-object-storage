@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "wasabi",
+  "name": "Wasabi",
+  "type": "alternative",
+  "url": "https://wasabi.com",
+  "verified": "Apr 2026",
+  "bestFor": ["backup"],
+  "migrationEase": "High (S3 compatible)",
+  "gotchas": "⚠️ 90-day minimum retention — deleting OR overwriting before 90 days still charges the full 90 days. Egress is 'free' but subject to 'reasonable use' policy (≤ storage volume). No lifecycle policies. No event notifications.",
+  "pricing": {
+    "storageStd": 0.0049,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null,
+    "egressPerGB": 0,
+    "egressFree": "Free (reasonable use ≤ 1× storage)",
+    "putPer1k": 0,
+    "getPer1k": 0,
+    "retrievalFee": "None",
+    "minRetention": "⚠️ 90 days (pay-as-you-go)",
+    "billing": "Monthly",
+    "freeTier": "1 TB / 30 day trial"
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Hot Cloud Storage (single tier)",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": false,
+    "objectLock": true,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "High (core S3 operations)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.9%",
+    "regions": 16,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~20–50 ms",
+    "ttfbP99": "~100–200 ms",
+    "throughput": "~50–100 MB/s",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Reasonable use policy enforcement"
+  },
+  "limits": {
+    "maxBuckets": "100",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "2 KB"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": "N/A",
+    "softDelete": false,
+    "legalHold": true,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": true,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": false
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": false,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "None built-in",
+    "staticHost": false,
+    "transferAccel": false,
+    "nativeCompute": "None",
+    "nativeAnalytics": "None"
+  }
+}

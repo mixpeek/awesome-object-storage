@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "ibm-cloud",
+  "name": "IBM Cloud Object Storage",
+  "type": "hyperscaler",
+  "url": "https://www.ibm.com/products/cloud-object-storage",
+  "verified": "Apr 2026",
+  "bestFor": ["backup", "datalake"],
+  "migrationEase": "High (S3 compatible API, forked SDKs)",
+  "gotchas": "Complex pricing with Smart Tier, One-Rate, and Standard plans. One-Rate bundles egress but has overage charges. S3 SDKs are IBM forks — mostly compatible but some quirks.",
+  "pricing": {
+    "storageStd": 0.022,
+    "storageIA": null,
+    "storageArchive": 0.0014,
+    "storageDeep": null,
+    "egressPerGB": 0.09,
+    "egressFree": "One-Rate plan includes egress allowance",
+    "putPer1k": 0.005,
+    "getPer1k": 0.0004,
+    "retrievalFee": "Archive: restore fee; Accel. Archive: 2hr restore",
+    "minRetention": "None (Smart Tier); 90d Archive; 180d Deep Archive",
+    "billing": "Per-hour",
+    "freeTier": "25 GB always free (Lite plan)"
+  },
+  "features": {
+    "tiers": 5,
+    "tierNames": "Smart Tier, Standard, Vault, Cold Vault, Archive, Accelerated Archive",
+    "autoTier": true,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": true,
+    "notifyFormat": "IBM Cloud Functions, Activity Tracker",
+    "s3Compat": "Full",
+    "apiDepth": "High (S3 compat + IBM extensions)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999999% (14 nines!)",
+    "availSLA": "99.99%",
+    "regions": 25,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": true,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~10–30 ms",
+    "ttfbP99": "~50–100 ms",
+    "throughput": "~100 MB/s",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Service limits (adjustable)"
+  },
+  "limits": {
+    "maxBuckets": "1,000",
+    "maxObjSize": "10 TB",
+    "maxMetaKB": "Not published"
+  },
+  "dataProtection": {
+    "replication": true,
+    "replRPO": "Variable (async)",
+    "softDelete": false,
+    "legalHold": true,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": true,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": true,
+    "deltaIceberg": "IBM SQL Query, Spark via Watson Studio"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": true,
+    "sseC": true,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "Akamai CDN (IBM CDN add-on)",
+    "staticHost": true,
+    "transferAccel": true,
+    "nativeCompute": "IBM Cloud VMs, Code Engine, IKS",
+    "nativeAnalytics": "Watson Studio, SQL Query, DataStage"
+  }
+}

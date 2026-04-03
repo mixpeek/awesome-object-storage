@@ -1,0 +1,98 @@
+{
+  "$schema": "../schema.json",
+  "id": "hetzner",
+  "name": "Hetzner",
+  "type": "alternative",
+  "url": "https://www.hetzner.com/storage/object-storage",
+  "verified": "Mar 2026",
+  "bestFor": [
+    "backup",
+    "startup"
+  ],
+  "migrationEase": "High (S3 compatible)",
+  "gotchas": "EU only (Germany, Finland). No lifecycle policies. No CDN integration. Higher latency outside Europe.",
+  "pricing": {
+    "egressPerGB": 0.01,
+    "egressFree": "1 TB/mo free internal transfer",
+    "putPer1k": null,
+    "getPer1k": null,
+    "retrievalFee": "None",
+    "minRetention": "None",
+    "billing": "Per-hour",
+    "freeTier": "None",
+    "storageStd": 0.0052,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Standard (single tier)",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": false,
+    "objectLock": true,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "Moderate (core + versioning + object lock)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.9%",
+    "regions": 2,
+    "geoNA": false,
+    "geoEU": true,
+    "geoAPAC": false,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~10–30 ms (EU)",
+    "ttfbP99": "~50–100 ms (EU)",
+    "throughput": "~100 MB/s",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Soft limits"
+  },
+  "limits": {
+    "maxBuckets": "100",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "2 KB"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": null,
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": false,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": false
+  },
+  "compliance": {
+    "soc2": false,
+    "hipaa": false,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "None",
+    "staticHost": false,
+    "transferAccel": false,
+    "nativeCompute": "Hetzner Cloud VMs",
+    "nativeAnalytics": "None"
+  }
+}

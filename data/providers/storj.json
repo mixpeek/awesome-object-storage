@@ -1,0 +1,98 @@
+{
+  "$schema": "../schema.json",
+  "id": "storj",
+  "name": "Storj",
+  "type": "decentralized",
+  "url": "https://storj.io",
+  "verified": "Apr 2026",
+  "bestFor": [
+    "backup",
+    "multicloud"
+  ],
+  "migrationEase": "High (S3 compat gateway)",
+  "gotchas": "Per-segment fees add up on many small objects. Higher latency due to decentralized architecture. 9 nines durability (not 11).",
+  "pricing": {
+    "egressPerGB": 0.007,
+    "egressFree": "None (all egress metered)",
+    "putPer1k": null,
+    "getPer1k": null,
+    "retrievalFee": "Per-segment fee (varies by object size)",
+    "minRetention": "None",
+    "billing": "Per-hour",
+    "freeTier": "25 GB storage + 25 GB egress/mo",
+    "storageStd": 0.004,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Standard (decentralized)",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "High (core S3 operations)"
+  },
+  "infrastructure": {
+    "durability": "99.9999999% (9 nines)",
+    "availSLA": "99.95%",
+    "regions": 1,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": true,
+    "edgePops": null,
+    "consistency": "Strong"
+  },
+  "performance": {
+    "ttfbP50": "~50–100 ms",
+    "ttfbP99": "~200–500 ms",
+    "throughput": "Variable (decentralized nodes)",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Rate limits apply"
+  },
+  "limits": {
+    "maxBuckets": "100",
+    "maxObjSize": "Unlimited (multipart)",
+    "maxMetaKB": "Not published"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": "Inherent (decentralized erasure coding)",
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": false,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "Linkshare (edge caching)",
+    "staticHost": true,
+    "transferAccel": false,
+    "nativeCompute": "None",
+    "nativeAnalytics": "None"
+  }
+}

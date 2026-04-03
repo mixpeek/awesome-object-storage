@@ -1,0 +1,99 @@
+{
+  "$schema": "../schema.json",
+  "id": "minio",
+  "name": "MinIO",
+  "type": "selfhost",
+  "url": "https://min.io",
+  "verified": "Apr 2026",
+  "bestFor": [
+    "datalake",
+    "aiml",
+    "multicloud"
+  ],
+  "migrationEase": "Highest (most complete OSS S3 impl)",
+  "gotchas": "AGPL-3.0 license may restrict commercial use. You own uptime, durability, and backups. Distributed mode is complex to operate.",
+  "pricing": {
+    "egressPerGB": null,
+    "egressFree": "N/A — self-hosted (your infra costs)",
+    "putPer1k": null,
+    "getPer1k": null,
+    "retrievalFee": "N/A",
+    "minRetention": "None (you configure)",
+    "billing": "License-based or free AGPL",
+    "freeTier": "Free (AGPL-3.0) or AIStor Enterprise",
+    "storageStd": null,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null
+  },
+  "features": {
+    "tiers": null,
+    "tierNames": "Configurable ILM tiering to any S3 target",
+    "autoTier": true,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": true,
+    "notifyFormat": "Webhooks, AMQP, Kafka, NATS, Redis, PostgreSQL, Elasticsearch",
+    "s3Compat": "Full",
+    "apiDepth": "Full — most complete OSS S3 implementation"
+  },
+  "infrastructure": {
+    "durability": "Configurable via erasure coding",
+    "availSLA": "Self-managed",
+    "regions": null,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": true,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "< 10 ms (same-rack)",
+    "ttfbP99": "< 30 ms (same-rack)",
+    "throughput": "Saturates hardware (21+ TiB/s benchmarked)",
+    "reqLimitGET": "Hardware-bound (no software limit)",
+    "reqLimitPUT": "Hardware-bound (no software limit)",
+    "throttle": "None — limited only by your hardware"
+  },
+  "limits": {
+    "maxBuckets": "Unlimited",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "2 KB (S3 compat)"
+  },
+  "dataProtection": {
+    "replication": true,
+    "replRPO": "Near-zero (sync) or configurable (async)",
+    "softDelete": true,
+    "legalHold": true,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": true,
+    "batchOps": true,
+    "inventory": true,
+    "accessLog": true,
+    "deltaIceberg": "Spark, Trino, Iceberg, Delta Lake, Hudi (native)"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": true,
+    "sseC": true,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": false,
+    "hipaa": false,
+    "iso27001": false,
+    "gdpr": false
+  },
+  "ecosystem": {
+    "cdn": "Bring your own",
+    "staticHost": false,
+    "transferAccel": false,
+    "nativeCompute": "Any — K8s, bare metal, VMs, edge",
+    "nativeAnalytics": "Spark, Trino, Presto, Iceberg"
+  }
+}

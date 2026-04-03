@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "cloudflare-r2",
+  "name": "Cloudflare R2",
+  "type": "edge",
+  "url": "https://www.cloudflare.com/developer-platform/products/r2/",
+  "verified": "Apr 2026",
+  "bestFor": ["media", "multicloud", "startup"],
+  "migrationEase": "High (S3 compat + Super Slurper)",
+  "gotchas": "No versioning. No object lock. No spending caps — abuse can spike bills. Limited to 2 tiers (no deep archive).",
+  "pricing": {
+    "storageStd": 0.015,
+    "storageIA": 0.01,
+    "storageArchive": null,
+    "storageDeep": null,
+    "egressPerGB": 0,
+    "egressFree": "Unlimited — always $0",
+    "putPer1k": 0.0045,
+    "getPer1k": 0.00036,
+    "retrievalFee": "None",
+    "minRetention": "None (Std); 30d (IA)",
+    "billing": "Per-second",
+    "freeTier": "10 GB + 10M reads/mo forever"
+  },
+  "features": {
+    "tiers": 2,
+    "tierNames": "Standard, Infrequent Access",
+    "autoTier": false,
+    "versioning": false,
+    "lifecycle": true,
+    "objectLock": false,
+    "eventNotify": true,
+    "notifyFormat": "Workers event handler",
+    "s3Compat": "Full",
+    "apiDepth": "High (core S3 ops)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.99%",
+    "regions": 1,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": true,
+    "edgePops": 330,
+    "consistency": "Strong"
+  },
+  "performance": {
+    "ttfbP50": "~20–50 ms",
+    "ttfbP99": "~100–200 ms",
+    "throughput": "~100 MB/s",
+    "reqLimitGET": "10,000/s",
+    "reqLimitPUT": "1,000/s",
+    "throttle": "429 rate limit"
+  },
+  "limits": {
+    "maxBuckets": "1,000",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "2 KB"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": "N/A (auto distributed)",
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": true,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": false,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "Cloudflare (330+ PoPs, native)",
+    "staticHost": true,
+    "transferAccel": false,
+    "nativeCompute": "Workers, Pages",
+    "nativeAnalytics": "Workers Analytics Engine"
+  }
+}

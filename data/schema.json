@@ -1,0 +1,427 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/mixpeek/awesome-object-storage/main/data/schema.json",
+  "title": "Object Storage Provider",
+  "description": "Schema for an object storage provider entry in the comparison dataset.",
+  "type": "object",
+  "required": ["id", "name", "type", "url", "verified", "bestFor", "migrationEase", "gotchas"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Unique kebab-case identifier for the provider.",
+      "examples": ["aws-s3", "cloudflare-r2", "backblaze-b2"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable display name.",
+      "examples": ["Amazon S3", "Cloudflare R2", "Backblaze B2"]
+    },
+    "type": {
+      "type": "string",
+      "enum": ["hyperscaler", "alternative", "edge", "selfhost", "decentralized"],
+      "description": "Provider category."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the provider's storage product page."
+    },
+    "verified": {
+      "type": "string",
+      "description": "Month and year the data was last verified.",
+      "examples": ["Apr 2026"]
+    },
+    "bestFor": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["media", "backup", "datalake", "aiml", "multicloud", "startup"]
+      },
+      "description": "Primary use cases the provider excels at."
+    },
+    "migrationEase": {
+      "type": "string",
+      "description": "Free-text summary of migration difficulty and tooling.",
+      "examples": ["S3-native; CLI, SDK, and console migration tools available"]
+    },
+    "gotchas": {
+      "type": "string",
+      "description": "Critical warnings, hidden costs, or common pitfalls.",
+      "examples": ["Egress fees can dominate total cost at scale"]
+    },
+
+    "pricing": {
+      "type": "object",
+      "description": "Cost structure and billing details.",
+      "properties": {
+        "storageStd": {
+          "type": ["number", "null"],
+          "description": "Standard storage tier cost in $/GB/month.",
+          "examples": [0.023]
+        },
+        "storageIA": {
+          "type": ["number", "null"],
+          "description": "Infrequent-access tier cost in $/GB/month.",
+          "examples": [0.0125]
+        },
+        "storageArchive": {
+          "type": ["number", "null"],
+          "description": "Archive tier cost in $/GB/month.",
+          "examples": [0.004]
+        },
+        "storageDeep": {
+          "type": ["number", "null"],
+          "description": "Deep archive tier cost in $/GB/month.",
+          "examples": [0.00099]
+        },
+        "egressPerGB": {
+          "type": ["number", "null"],
+          "description": "Data egress cost in $/GB.",
+          "examples": [0.09]
+        },
+        "egressFree": {
+          "type": "string",
+          "description": "Description of free egress allowance or policy.",
+          "examples": ["100 GB/month free", "Unlimited free egress"]
+        },
+        "putPer1k": {
+          "type": ["number", "null"],
+          "description": "Cost per 1,000 PUT/POST/LIST requests.",
+          "examples": [0.005]
+        },
+        "getPer1k": {
+          "type": ["number", "null"],
+          "description": "Cost per 1,000 GET/HEAD requests.",
+          "examples": [0.0004]
+        },
+        "retrievalFee": {
+          "type": ["string", "null"],
+          "description": "Per-GB retrieval fee for cold or archive tiers.",
+          "examples": ["$0.01/GB for Glacier Flexible", "None"]
+        },
+        "minRetention": {
+          "type": ["string", "null"],
+          "description": "Minimum retention policies and early-delete charges.",
+          "examples": ["30 days for IA, 90 days for Glacier"]
+        },
+        "billing": {
+          "type": "string",
+          "description": "Billing model and granularity.",
+          "examples": ["Per-second metering", "Hourly billing"]
+        },
+        "freeTier": {
+          "type": ["string", "null"],
+          "description": "Free tier or trial details.",
+          "examples": ["5 GB storage + 20k GET + 2k PUT for 12 months"]
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "features": {
+      "type": "object",
+      "description": "Storage features and S3 API compatibility.",
+      "properties": {
+        "tiers": {
+          "type": ["integer", "null"],
+          "description": "Number of distinct storage tiers offered.",
+          "examples": [6]
+        },
+        "tierNames": {
+          "type": ["string", "null"],
+          "description": "Comma-separated list of tier names.",
+          "examples": ["Standard, IA, One-Zone IA, Glacier IR, Glacier Flexible, Glacier Deep"]
+        },
+        "autoTier": {
+          "type": "boolean",
+          "description": "Whether the provider offers automatic tiering (Intelligent-Tiering or equivalent)."
+        },
+        "versioning": {
+          "type": "boolean",
+          "description": "Object versioning support."
+        },
+        "lifecycle": {
+          "type": "boolean",
+          "description": "Lifecycle management rules (auto-transition, expiration)."
+        },
+        "objectLock": {
+          "type": "boolean",
+          "description": "WORM-compliant object lock support."
+        },
+        "eventNotify": {
+          "type": "boolean",
+          "description": "Event notification support on object changes."
+        },
+        "notifyFormat": {
+          "type": ["string", "null"],
+          "description": "Notification targets and formats.",
+          "examples": ["SNS, SQS, Lambda, EventBridge"]
+        },
+        "s3Compat": {
+          "type": "string",
+          "enum": ["Native", "Full", "Interop", "Partial", "Preview"],
+          "description": "Level of S3 API compatibility. Native = AWS S3 itself."
+        },
+        "apiDepth": {
+          "type": ["string", "null"],
+          "description": "API completeness relative to full S3 spec.",
+          "examples": ["Full S3 + proprietary extensions", "Core CRUD + multipart; no S3 Select"]
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "infrastructure": {
+      "type": "object",
+      "description": "Durability, availability, and geographic presence.",
+      "properties": {
+        "durability": {
+          "type": ["string", "null"],
+          "description": "Advertised annual durability.",
+          "examples": ["99.999999999%"]
+        },
+        "availSLA": {
+          "type": ["string", "null"],
+          "description": "Availability SLA.",
+          "examples": ["99.99%", "99.9%"]
+        },
+        "regions": {
+          "type": ["integer", "null"],
+          "description": "Number of regions where the storage service is available.",
+          "examples": [33]
+        },
+        "geoNA": {
+          "type": "boolean",
+          "description": "Presence in North America."
+        },
+        "geoEU": {
+          "type": "boolean",
+          "description": "Presence in Europe."
+        },
+        "geoAPAC": {
+          "type": "boolean",
+          "description": "Presence in Asia-Pacific."
+        },
+        "multiRegion": {
+          "type": "boolean",
+          "description": "Multi-region or cross-region bucket support."
+        },
+        "edgePops": {
+          "type": ["integer", "null"],
+          "description": "Number of edge points of presence (PoPs) for caching or acceleration.",
+          "examples": [330]
+        },
+        "consistency": {
+          "type": ["string", "null"],
+          "description": "Consistency model for reads after writes.",
+          "examples": ["Strong read-after-write", "Eventual"]
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "performance": {
+      "type": "object",
+      "description": "Latency, throughput, and rate limits.",
+      "properties": {
+        "ttfbP50": {
+          "type": ["string", "null"],
+          "description": "Median (p50) time to first byte.",
+          "examples": ["~20 ms (same-region)"]
+        },
+        "ttfbP99": {
+          "type": ["string", "null"],
+          "description": "99th percentile time to first byte.",
+          "examples": ["~100 ms"]
+        },
+        "throughput": {
+          "type": ["string", "null"],
+          "description": "Throughput capabilities or benchmarks.",
+          "examples": ["100 Gbps per prefix partition"]
+        },
+        "reqLimitGET": {
+          "type": ["string", "null"],
+          "description": "GET request rate limit per prefix or account.",
+          "examples": ["5,500 GET/s per prefix (auto-scales)"]
+        },
+        "reqLimitPUT": {
+          "type": ["string", "null"],
+          "description": "PUT request rate limit per prefix or account.",
+          "examples": ["3,500 PUT/s per prefix (auto-scales)"]
+        },
+        "throttle": {
+          "type": ["string", "null"],
+          "description": "Throttling behavior when limits are exceeded.",
+          "examples": ["HTTP 503 SlowDown; exponential backoff recommended"]
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "limits": {
+      "type": "object",
+      "description": "Object and bucket size limits.",
+      "properties": {
+        "maxBuckets": {
+          "type": ["string", "null"],
+          "description": "Maximum number of buckets per account.",
+          "examples": ["100 (soft limit, increase on request)"]
+        },
+        "maxObjSize": {
+          "type": "string",
+          "description": "Maximum single object size.",
+          "examples": ["5 TB"]
+        },
+        "maxMetaKB": {
+          "type": ["string", "null"],
+          "description": "Maximum user-defined metadata per object.",
+          "examples": ["2 KB", "8 KB"]
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "dataProtection": {
+      "type": "object",
+      "description": "Replication, deletion protection, and recovery features.",
+      "properties": {
+        "replication": {
+          "type": "boolean",
+          "description": "Cross-region or same-region replication support."
+        },
+        "replRPO": {
+          "type": ["string", "null"],
+          "description": "Replication recovery point objective.",
+          "examples": ["15 min (S3 RTC)", "Near-real-time"]
+        },
+        "softDelete": {
+          "type": "boolean",
+          "description": "Soft-delete or trash recovery support."
+        },
+        "legalHold": {
+          "type": "boolean",
+          "description": "Legal hold (indefinite retention) support."
+        },
+        "mfaDelete": {
+          "type": "boolean",
+          "description": "MFA-protected delete support."
+        },
+        "pitRestore": {
+          "type": "boolean",
+          "description": "Point-in-time restore capability."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "advancedS3": {
+      "type": "object",
+      "description": "Advanced S3-ecosystem features.",
+      "properties": {
+        "selectQuery": {
+          "type": "boolean",
+          "description": "S3 Select or server-side query support."
+        },
+        "batchOps": {
+          "type": "boolean",
+          "description": "S3 Batch Operations or equivalent bulk job API."
+        },
+        "inventory": {
+          "type": "boolean",
+          "description": "Automated inventory reports."
+        },
+        "accessLog": {
+          "type": "boolean",
+          "description": "Server access logging."
+        },
+        "deltaIceberg": {
+          "type": ["string", "null"],
+          "description": "Delta Lake or Apache Iceberg table integration.",
+          "examples": ["S3 Tables (managed Iceberg)", "Via Spark/Trino", "None"]
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "security": {
+      "type": "object",
+      "description": "Encryption options.",
+      "properties": {
+        "sseS3": {
+          "type": "boolean",
+          "description": "Server-side encryption with provider-managed keys."
+        },
+        "sseKMS": {
+          "type": "boolean",
+          "description": "Server-side encryption with KMS-managed keys."
+        },
+        "sseC": {
+          "type": "boolean",
+          "description": "Server-side encryption with customer-provided keys."
+        },
+        "encryptDefault": {
+          "type": "boolean",
+          "description": "Encryption enabled by default on all new objects."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "compliance": {
+      "type": "object",
+      "description": "Compliance certifications.",
+      "properties": {
+        "soc2": {
+          "type": "boolean",
+          "description": "SOC 2 certification."
+        },
+        "hipaa": {
+          "type": "boolean",
+          "description": "HIPAA eligibility or certification."
+        },
+        "iso27001": {
+          "type": "boolean",
+          "description": "ISO 27001 certification."
+        },
+        "gdpr": {
+          "type": "boolean",
+          "description": "GDPR compliance."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "ecosystem": {
+      "type": "object",
+      "description": "CDN, compute, and analytics integrations.",
+      "properties": {
+        "cdn": {
+          "type": ["string", "null"],
+          "description": "Native CDN integration.",
+          "examples": ["CloudFront", "Built-in (Cloudflare network)", "None"]
+        },
+        "staticHost": {
+          "type": "boolean",
+          "description": "Static website hosting from the bucket."
+        },
+        "transferAccel": {
+          "type": "boolean",
+          "description": "Transfer acceleration via edge network."
+        },
+        "nativeCompute": {
+          "type": ["string", "null"],
+          "description": "Native serverless compute integration.",
+          "examples": ["Lambda, ECS, EC2", "Workers", "Cloud Functions"]
+        },
+        "nativeAnalytics": {
+          "type": ["string", "null"],
+          "description": "Native analytics or query engine integration.",
+          "examples": ["Athena, Redshift Spectrum, EMR", "Workers Analytics Engine"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

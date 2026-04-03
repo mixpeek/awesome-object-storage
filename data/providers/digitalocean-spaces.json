@@ -1,0 +1,98 @@
+{
+  "$schema": "../schema.json",
+  "id": "digitalocean-spaces",
+  "name": "DigitalOcean Spaces",
+  "type": "alternative",
+  "url": "https://www.digitalocean.com/products/spaces",
+  "verified": "Apr 2026",
+  "bestFor": [
+    "startup",
+    "media"
+  ],
+  "migrationEase": "High (S3 compatible)",
+  "gotchas": "⚠️ Max object size is 5 GB (not 5 TB). $5/mo minimum charge. Versioning and lifecycle only configurable via API, not console. No object lock.",
+  "pricing": {
+    "egressPerGB": 0.01,
+    "egressFree": "1 TB/mo included in base $5",
+    "putPer1k": 0.005,
+    "getPer1k": 0.0004,
+    "retrievalFee": "None",
+    "minRetention": "None",
+    "billing": "Monthly ($5/mo minimum)",
+    "freeTier": "$5/mo = 250 GB storage + 1 TB transfer",
+    "storageStd": 0.02,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Standard (single tier)",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": false,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "Partial (advanced features API-only)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.9%",
+    "regions": 9,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~20–40 ms",
+    "ttfbP99": "~80–150 ms",
+    "throughput": "~50 MB/s",
+    "reqLimitGET": "750 req/s per IP",
+    "reqLimitPUT": "150 req/s per IP",
+    "throttle": "429 Too Many Requests"
+  },
+  "limits": {
+    "maxBuckets": "100",
+    "maxObjSize": "⚠️ 5 GB",
+    "maxMetaKB": "2 KB"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": null,
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": true,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": true,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "Built-in CDN included",
+    "staticHost": true,
+    "transferAccel": false,
+    "nativeCompute": "Droplets, App Platform, Functions",
+    "nativeAnalytics": "None"
+  }
+}

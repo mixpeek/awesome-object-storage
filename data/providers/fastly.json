@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "fastly",
+  "name": "Fastly Object Storage",
+  "type": "edge",
+  "url": "https://www.fastly.com/products/storage",
+  "verified": "Mar 2026",
+  "bestFor": ["media", "startup"],
+  "migrationEase": "High (S3 compatible)",
+  "gotchas": "Newer entrant (2024 launch). Fewer features than R2. Limited documentation compared to established providers. Pricing still evolving.",
+  "pricing": {
+    "storageStd": 0.012,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null,
+    "egressPerGB": 0,
+    "egressFree": "Free (included with Fastly CDN)",
+    "putPer1k": 0.005,
+    "getPer1k": 0.0004,
+    "retrievalFee": "None",
+    "minRetention": "None",
+    "billing": "Per-second",
+    "freeTier": "Not published"
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Standard (edge-distributed)",
+    "autoTier": false,
+    "versioning": false,
+    "lifecycle": false,
+    "objectLock": false,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "Moderate (growing feature set)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.95%",
+    "regions": 1,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": true,
+    "edgePops": null,
+    "consistency": "Strong"
+  },
+  "performance": {
+    "ttfbP50": "~15–40 ms (edge)",
+    "ttfbP99": "~80–150 ms",
+    "throughput": "Variable (edge-routed)",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Not published"
+  },
+  "limits": {
+    "maxBuckets": "Not published",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "Not published"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": "N/A (auto distributed)",
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": true,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": true,
+    "hipaa": false,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "Fastly CDN (native, global PoPs)",
+    "staticHost": true,
+    "transferAccel": false,
+    "nativeCompute": "Fastly Compute@Edge",
+    "nativeAnalytics": "Fastly Real-Time Analytics"
+  }
+}

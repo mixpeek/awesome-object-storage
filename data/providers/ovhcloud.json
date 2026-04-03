@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "ovhcloud",
+  "name": "OVHcloud",
+  "type": "alternative",
+  "url": "https://us.ovhcloud.com/public-cloud/object-storage/",
+  "verified": "Apr 2026",
+  "bestFor": ["backup", "startup"],
+  "migrationEase": "High (S3 compatible)",
+  "gotchas": "Free egress as of Jan 2026 — great, but newer policy. 30-day min retention on all tiers (early delete fee). Overwrite = deletion + re-creation for retention billing.",
+  "pricing": {
+    "storageStd": 0.007,
+    "storageIA": 0.004,
+    "storageArchive": null,
+    "storageDeep": null,
+    "egressPerGB": 0,
+    "egressFree": "Free (as of Jan 2026)",
+    "putPer1k": 0,
+    "getPer1k": 0,
+    "retrievalFee": "None (Std/IA); hours for Cold Archive",
+    "minRetention": "30 days (all tiers, early delete fee)",
+    "billing": "Per-hour",
+    "freeTier": "$200 credits for new accounts"
+  },
+  "features": {
+    "tiers": 4,
+    "tierNames": "High Performance, Standard, Infrequent Access, Cold Archive",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "High (S3 compatible + SWIFT legacy)"
+  },
+  "infrastructure": {
+    "durability": "99.999999999%",
+    "availSLA": "99.9%",
+    "regions": 8,
+    "geoNA": true,
+    "geoEU": true,
+    "geoAPAC": true,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": "~15–30 ms",
+    "ttfbP99": "~60–120 ms",
+    "throughput": "~100 MB/s (High Perf: higher)",
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Soft limits"
+  },
+  "limits": {
+    "maxBuckets": "Not published",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "Not published"
+  },
+  "dataProtection": {
+    "replication": true,
+    "replRPO": "Variable",
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": true,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": false,
+    "hipaa": false,
+    "iso27001": true,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "None native",
+    "staticHost": false,
+    "transferAccel": false,
+    "nativeCompute": "OVH Public Cloud instances, Managed K8s",
+    "nativeAnalytics": "None"
+  }
+}
