@@ -1,16 +1,16 @@
+<p align="center">
+  <img src="og-image.png" alt="Awesome Object Storage" width="800">
+</p>
+
 # Awesome Object Storage [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
 > A curated, opinionated guide to S3-compatible object storage — pricing, features, gotchas, and tools.
 >
 > **[Interactive comparison tool](https://storage.mixpeek.com)** | Maintained by [Mixpeek](https://mixpeek.com)
 
-## Why This Exists
-
 Choosing object storage looks simple until you're comparing 7 pricing dimensions, hidden retention policies, and "S3-compatible" claims that break on multipart uploads. We built this because we got tired of finding out about Wasabi's 90-day minimum retention policy AFTER migrating 50 TB.
 
 This list covers **21 providers** across hyperscalers, alternatives, edge/CDN-native, self-hosted, and decentralized options. Every claim is sourced. Every gotcha is real. PRs welcome.
-
----
 
 ## Contents
 
@@ -27,7 +27,7 @@ This list covers **21 providers** across hyperscalers, alternatives, edge/CDN-na
 - [Migration Guides](#migration-guides)
 - [Changelog](#changelog)
 - [Frequently Asked Questions](#frequently-asked-questions)
-- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -462,6 +462,8 @@ Short version: edit the JSON in `data/providers/`, include a source URL for ever
 
 ## License
 
-MIT -- use this data however you want.
+[![CC0](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
 
-Maintained by [Mixpeek](https://mixpeek.com) -- multimodal intelligence for your object storage.
+To the extent possible under law, [Mixpeek](https://mixpeek.com) has waived all copyright and related rights to this work.
+
+Maintained by [Mixpeek](https://mixpeek.com) — multimodal intelligence for your object storage.
