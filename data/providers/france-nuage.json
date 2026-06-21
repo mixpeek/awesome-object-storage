@@ -1,0 +1,95 @@
+{
+  "$schema": "../schema.json",
+  "id": "france-nuage",
+  "name": "France Nuage",
+  "type": "alternative",
+  "url": "https://france-nuage.fr",
+  "verified": "Apr 2026",
+  "bestFor": ["backup", "startup"],
+  "migrationEase": "High (S3 compatible via Ceph RadosGW)",
+  "gotchas": "Single region (France only). Smaller provider, fewer managed services around storage. Pricing not published on website.",
+  "pricing": {
+    "storageStd": null,
+    "storageIA": null,
+    "storageArchive": null,
+    "storageDeep": null,
+    "egressPerGB": null,
+    "egressFree": "Contact provider",
+    "putPer1k": null,
+    "getPer1k": null,
+    "retrievalFee": null,
+    "minRetention": null,
+    "billing": "Monthly",
+    "freeTier": null
+  },
+  "features": {
+    "tiers": 1,
+    "tierNames": "Standard",
+    "autoTier": false,
+    "versioning": true,
+    "lifecycle": true,
+    "objectLock": true,
+    "eventNotify": false,
+    "notifyFormat": "None",
+    "s3Compat": "Full",
+    "apiDepth": "High (Ceph RadosGW)"
+  },
+  "infrastructure": {
+    "durability": null,
+    "availSLA": null,
+    "regions": 1,
+    "geoNA": false,
+    "geoEU": true,
+    "geoAPAC": false,
+    "multiRegion": false,
+    "edgePops": null,
+    "consistency": "Strong read-after-write"
+  },
+  "performance": {
+    "ttfbP50": null,
+    "ttfbP99": null,
+    "throughput": null,
+    "reqLimitGET": "Not published",
+    "reqLimitPUT": "Not published",
+    "throttle": "Not published"
+  },
+  "limits": {
+    "maxBuckets": "Not published",
+    "maxObjSize": "5 TB",
+    "maxMetaKB": "Not published"
+  },
+  "dataProtection": {
+    "replication": false,
+    "replRPO": null,
+    "softDelete": false,
+    "legalHold": false,
+    "mfaDelete": false,
+    "pitRestore": false
+  },
+  "advancedS3": {
+    "selectQuery": false,
+    "batchOps": false,
+    "inventory": false,
+    "accessLog": true,
+    "deltaIceberg": "None"
+  },
+  "security": {
+    "sseS3": true,
+    "sseKMS": false,
+    "sseC": false,
+    "encryptDefault": true
+  },
+  "compliance": {
+    "soc2": false,
+    "hipaa": false,
+    "iso27001": false,
+    "gdpr": true
+  },
+  "ecosystem": {
+    "cdn": "None native",
+    "staticHost": false,
+    "transferAccel": false,
+    "nativeCompute": "None",
+    "nativeAnalytics": "None"
+  }
+}
