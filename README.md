@@ -8,7 +8,7 @@
 
 Choosing object storage looks simple until you're comparing 7 pricing dimensions, hidden retention policies, and "S3-compatible" claims that break on multipart uploads. We built this because we got tired of finding out about Wasabi's 90-day minimum retention policy AFTER migrating 50 TB.
 
-This list covers **21 providers** across hyperscalers, alternatives, edge/CDN-native, self-hosted, and decentralized options. Every claim is sourced. Every gotcha is real. PRs welcome.
+This list covers **23 providers** across hyperscalers, alternatives, edge/CDN-native, self-hosted, and decentralized options. Every claim is sourced. Every gotcha is real. PRs welcome.
 
 ## Contents
 
@@ -54,6 +54,7 @@ All prices are list prices in USD as of Q1 2026. Storage is per GB/month (standa
 | [Nebius Object Storage](https://nebius.com/services/storage)                        | $0.0164         | $0.01       | Free internal   | 4     | 5 TB       | [Full](https://docs.nebius.com/storage/s3/)                                                          | Yes         | Yes        | EU-only; newer brand (Yandex Cloud spinoff)                 |
 | [Impossible Cloud](https://impossiblecloud.com/pricing)                             | $0.006          | $0          | Free            | 1     | 5 TB       | [Full](https://docs.impossiblecloud.com/)                                                            | Yes         | Yes        | Newer, EU-focused, limited track record                     |
 | [Rabata](https://rabata.io)                                                         | $0.010          | $0.01       | None            | 2     | 5 TB       | [Full](https://rabata.io/docs/s3-api)                                                                | —           | —          | No free egress; Backup plan billed in 10 TB increments      |
+| [Neon Object Storage](https://neon.com/docs/introduction/plans#object-storage)      | $0.023          | $0.10       | 500 GB (per project)/mo       | 1     | 5 GB       | [Full](https://neon.com/docs/storage/s3-compatibility)                                               | No          | No         | 5 GiB max object, path-style + SigV4 only, 4 regions        |
 | [Fastly Object Storage](https://www.fastly.com/products/storage)                    | $0.012          | $0          | Included w/ CDN | 1     | 5 TB       | [Full](https://docs.fastly.com/en/storage/)                                                          | No          | No         | Newer product, fewer features than mature providers         |
 
 `$0*` = Free egress with "reasonable use" policy — typically means egress cannot exceed storage volume. Check the provider's terms.
@@ -94,9 +95,9 @@ This is the gotcha that costs real money and nobody reads the fine print:
 
 Every provider on this list claims S3 compatibility. In practice, compatibility ranges from "passes the full AWS S3 test suite" to "supports GET and PUT on a good day." Here's what actually varies:
 
-- Multipart uploads: Most support it. DigitalOcean Spaces, Vultr, and Linode cap objects at 5 GB, which means multipart is capped too.
-- Object Lock / WORM: R2, Fastly, Vultr, DigitalOcean Spaces, and Linode do not support it. If you need immutable backups for compliance, check before migrating.
-- Versioning: R2 and Fastly don't support it. If your application depends on versioned objects, these are not drop-in replacements.
+- Multipart uploads: Most support it. DigitalOcean Spaces, Vultr, Linode, and Neon cap objects at 5 GB, which means multipart is capped too.
+- Object Lock / WORM: R2, Fastly, Vultr, DigitalOcean Spaces, Linode, and Neon do not support it. If you need immutable backups for compliance, check before migrating.
+- Versioning: R2, Fastly, and Neon don't support it. If your application depends on versioned objects, these are not drop-in replacements.
 - Server-Side Encryption (SSE): Vultr doesn't support SSE. Others vary between SSE-S3, SSE-KMS, and SSE-C.
 - Presigned URLs: Generally work everywhere, but edge cases around expiration and regional endpoints can bite you on smaller providers.
 - Bucket notifications / Event Grid: Only AWS, GCS (via Pub/Sub), and MinIO support S3-style event notifications. Most alternatives don't.
@@ -131,6 +132,7 @@ Real-world monthly cost for a common workload: **10 TB stored, 5 TB egress/month
 | Cloudflare R2 | $150    | $0     | $3.60 | $4.50 | **~$158**    |
 | OVHcloud      | $70     | $0     | $1    | $5    | **~$76**     |
 | Rabata        | $100    | $50    | $0    | $0    | **~$150**    |
+| Neon          | $230    | $450   | $0    | $0    | **~$680**    |
 | Hetzner       | $52     | $40    | $1    | $5    | **~$98**     |
 | AWS S3        | $230    | $450   | $4    | $5    | **~$689**    |
 | GCS           | $200    | $600   | $4    | $5    | **~$809**    |
@@ -157,6 +159,8 @@ Opinionated recommendations. Your mileage may vary, but these are defensible sta
 **I need zero egress fees, period** -- Use Cloudflare R2. No egress fees, no asterisks, no "reasonable use" policy. Trade-off: no versioning, no object lock.
 
 **I need zero egress AND versioning/object lock** -- Use Tigris or Impossible Cloud. Both offer free egress with more features than R2, though they're newer services.
+
+**I need files that branch with my Postgres database** -- Use Neon Object Storage. Every Neon branch gets a copy-on-write view of its buckets, so preview and CI branches see the same rows and files as their parent without copying data. Trade-off: 5 GiB max object, no versioning or object lock, and $0.10/GB egress past 500 GB/mo.
 
 **I need a CDN origin** -- Use Cloudflare R2 (native Cloudflare CDN integration) or Fastly Object Storage (native Fastly CDN). Eliminates the origin-to-CDN egress that kills your bill with AWS.
 
@@ -231,6 +235,7 @@ Upload an object → trigger processing automatically.
 | GCS      | Pub/Sub, Eventarc, Cloud Functions | < 1s    | Eventarc for unified eventing.              |
 | R2       | Workers (event handler)            | < 100ms | Runs at edge. Fastest cold start.           |
 | Tigris   | Webhooks                           | < 1s    | Webhooks to any HTTP endpoint.              |
+| Neon     | Function Triggers                  | —       | Runs a Neon Function on upload.             |
 | B2       | Event Notifications (webhooks)     | ~ 1–5s  | Newer feature.                              |
 | MinIO    | Webhooks, AMQP, Kafka, NATS, Redis | < 1s    | Most notification targets of any provider.  |
 
@@ -262,6 +267,7 @@ The most important number nobody compares: **what does it cost to leave?**
 | IDrive e2        | $0*         | **$0***             | ~9 days       | Easy* (reasonable use)   |
 | Impossible Cloud | $0          | **$0**              | ~9 days       | **Trivial**              |
 | Rabata           | $0.01/GB    | **$1,000**          | ~9 days       | Easy                     |
+| Neon             | $0.10/GB    | **$9,950**          | ~9 days       | Easy                     |
 | Storj            | $0.007/GB   | **$700**            | ~9 days       | Easy                     |
 | MinIO            | $0          | **$0**              | Your infra    | **Trivial** (you own it) |
 

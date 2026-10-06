@@ -6,6 +6,11 @@ For per-provider last-verified dates, see the `verified` field in each provider'
 
 ---
 
+## September 2026
+
+### Initial data collection
+- **Neon Object Storage**: Initial entry. $0.023/GB-mo, no per-operation fees, egress being 500 GB/project/mo network transfer allowance and then costs $0.10/GB. 5 GiB max object. Available in 4 AWS regions (us-east-1, us-east-2, eu-central-1, ap-southeast-1). Buckets branch with the Postgres database. Sources: [plans](https://neon.com/docs/introduction/plans#object-storage), [limits](https://neon.com/docs/storage/overview#limits), [S3 compatibility](https://neon.com/docs/storage/s3-compatibility). (Sep 29)
+
 ## April 2026
 
 ### Verified (no changes)
