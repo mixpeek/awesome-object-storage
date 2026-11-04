@@ -299,6 +299,13 @@ The most important number nobody compares: **what does it cost to leave?**
 - [mc (MinIO Client)](https://min.io/docs/minio/linux/reference/minio-mc.html) - MinIO's CLI. Works with any S3-compatible provider, not just MinIO.
 - [s3cmd](https://s3tools.org/s3cmd) - Older but reliable CLI. Good for scripting.
 
+### Desktop Clients
+
+- [CS Browser (formerly S3 Browser)](https://s3browser.com/) - Windows-only freeware, free for personal use; commercial, business or government use requires a Pro licence. Client-side compression and AES-256 encryption, plus a versions manager.
+- [Cyberduck](https://cyberduck.io/) - GPL-licensed browser for macOS and Windows. Generic connection profiles cover third-party S3 providers. Reads `~/.aws/credentials` and supports STS AssumeRole with MFA. Also speaks FTP, SFTP, WebDAV, SMB and Backblaze B2.
+- [S3 Explorer](https://s3explorer.accessdevops.com/) - Windows, macOS and Linux, built with Rust and Tauri. Keeps a local index so repeated searches do not re-issue LIST requests, and records per-request latency and estimated cost in a built-in dashboard. Free up to 5 connection profiles.
+- [WinSCP](https://winscp.net/eng/index.php) - Windows-only, GPLv3. Handles S3 alongside FTP, FTPS, SCP, SFTP and WebDAV, and can take credentials from the AWS environment configuration instead of the connection dialog.
+
 ### SDKs
 
 - [AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) - Works with any S3-compatible endpoint. The lingua franca.
