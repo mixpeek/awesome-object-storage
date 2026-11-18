@@ -39,7 +39,7 @@ All prices are list prices in USD as of Q1 2026. Storage is per GB/month (standa
 | [Cloudflare R2](https://developers.cloudflare.com/r2/pricing/)                      | $0.015          | $0          | Unlimited       | 2     | 5 TB       | [Full](https://developers.cloudflare.com/r2/api/s3/)                                                 | No          | No         | No versioning, no object lock                               |
 | [Tigris](https://www.tigrisdata.com/docs/pricing/)                                  | $0.020          | $0          | Unlimited       | 4     | 5 TB       | [Full](https://www.tigrisdata.com/docs/api/)                                                         | Yes         | Yes        | Newer service, some limits TBD                              |
 | [Backblaze B2](https://www.backblaze.com/cloud-storage/pricing)                     | $0.006          | $0.01       | 3x storage      | 1     | 10 TB      | [Full](https://www.backblaze.com/docs/cloud-storage-s3-compatible-api)                               | Yes         | Yes        | Only 3 regions (US-West, US-East, EU-Central)               |
-| [Wasabi](https://wasabi.com/pricing)                                                | $0.0049         | $0*         | Reasonable use  | 1     | 5 TB       | [Full](https://docs.wasabi.com/docs/what-are-the-service-urls-for-wasabis-different-storage-regions) | Yes         | Yes        | 90-day minimum retention — you pay even if you delete early |
+| [Wasabi](https://wasabi.com/pricing)                                                | $0.0080         | $0*         | Reasonable use  | 1     | 5 TB       | [Full](https://docs.wasabi.com/docs/what-are-the-service-urls-for-wasabis-different-storage-regions) | Yes         | Yes        | 90-day minimum retention — you pay even if you delete early |
 | [DigitalOcean Spaces](https://www.digitalocean.com/pricing/spaces)                  | $0.020          | $0.01       | 1 TB/mo         | 1     | 5 GB       | [Full](https://docs.digitalocean.com/products/spaces/)                                               | No          | Yes        | Max object size is 5 GB, not 5 TB                           |
 | [MinIO](https://min.io/)                                                            | Self-host       | Self-host   | N/A             | ILM   | 5 TB       | [Full](https://min.io/product/s3-compatibility)                                                      | Yes         | Yes        | AGPL-3.0 — you run and maintain everything                  |
 | [Storj](https://www.storj.io/pricing)                                               | $0.004          | $0.007      | None            | 1     | Unlimited  | [Full](https://docs.storj.io/dcs/api-reference/s3-compatible-gateway)                                | Yes         | Yes        | Per-segment fees on small files; claims 11 nines durability |
@@ -126,7 +126,7 @@ Real-world monthly cost for a common workload: **10 TB stored, 5 TB egress/month
 | ------------- | ------- | ------ | ----- | ----- | ------------ |
 | IDrive e2     | $40     | $0*    | $1    | $5    | **~$46**     |
 | Storj         | $40     | $35    | $1    | $5    | **~$81**     |
-| Wasabi        | $49     | $0*    | $0    | $0    | **~$49**     |
+| Wasabi        | $80     | $0*    | $0    | $0    | **~$80**     |
 | Backblaze B2  | $60     | $20    | $4    | $5    | **~$89**     |
 | Cloudflare R2 | $150    | $0     | $3.60 | $4.50 | **~$158**    |
 | OVHcloud      | $70     | $0     | $1    | $5    | **~$76**     |
@@ -330,6 +330,7 @@ The most important number nobody compares: **what does it cost to leave?**
 - [Infracost](https://www.infracost.io/) - Cost estimates for Terraform. Shows S3 costs before you deploy.
 - [S3 Storage Lens](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html) - AWS-native storage analytics. Useful for finding optimization opportunities.
 - [CloudWatch S3 Metrics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/cloudwatch-monitoring.html) - Request-level metrics for AWS S3.
+- [s3-cost-review](https://github.com/da3ferg/s3-cost-review-skill) - Read-only agent skill (Claude Code, Codex, Cursor) that checks every bucket for unexpired old versions, abandoned multipart uploads and cold data on the Standard rate, and prints the S3 bill by usage type.
 
 ### Intelligence & Search
 
@@ -349,6 +350,7 @@ The most important number nobody compares: **what does it cost to leave?**
 - [Storj Performance Whitepaper](https://www.storj.io/whitepapers) - Architecture and performance claims for decentralized storage.
 - [Hetzner Object Storage Review (ServeTheHome)](https://www.servethehome.com/hetzner-object-storage-review/) - Independent review with performance data.
 - [Cloud Cost Handbook (Vantage)](https://handbook.vantage.sh/aws/services/s3-pricing/) - Detailed breakdown of S3 pricing dimensions.
+- [Amazon S3 pricing, with worked monthly bills (BucketDesk)](https://bucketdesk.com/blog/amazon-s3-pricing-for-business-file-storage) - Every S3 rate by class, request type and Region, three worked bills from 500 GB to a 10 TB Deep Archive, and the minimum-duration and 128 KB rules that make invoices differ from estimates.
 
 ---
 
