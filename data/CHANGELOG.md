@@ -6,6 +6,11 @@ For per-provider last-verified dates, see the `verified` field in each provider'
 
 ---
 
+## November 2026
+
+### Added
+- **STRG** — New provider. $6.80/TB/month with all egress and standard API requests included, 10 GB free, regions us-east-1 (Reston) and eu-central-1 (Amsterdam). Sources: [strg.com/pricing](https://strg.com/pricing), [docs.strg.com/billing](https://docs.strg.com/billing), [docs.strg.com/s3-api/overview](https://docs.strg.com/s3-api/overview). (Nov 18)
+
 ## April 2026
 
 ### Verified (no changes)

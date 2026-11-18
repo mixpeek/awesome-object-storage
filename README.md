@@ -8,7 +8,7 @@
 
 Choosing object storage looks simple until you're comparing 7 pricing dimensions, hidden retention policies, and "S3-compatible" claims that break on multipart uploads. We built this because we got tired of finding out about Wasabi's 90-day minimum retention policy AFTER migrating 50 TB.
 
-This list covers **21 providers** across hyperscalers, alternatives, edge/CDN-native, self-hosted, and decentralized options. Every claim is sourced. Every gotcha is real. PRs welcome.
+This list covers **23 providers** across hyperscalers, alternatives, edge/CDN-native, self-hosted, and decentralized options. Every claim is sourced. Every gotcha is real. PRs welcome.
 
 ## Contents
 
@@ -54,6 +54,7 @@ All prices are list prices in USD as of Q1 2026. Storage is per GB/month (standa
 | [Nebius Object Storage](https://nebius.com/services/storage)                        | $0.0164         | $0.01       | Free internal   | 4     | 5 TB       | [Full](https://docs.nebius.com/storage/s3/)                                                          | Yes         | Yes        | EU-only; newer brand (Yandex Cloud spinoff)                 |
 | [Impossible Cloud](https://impossiblecloud.com/pricing)                             | $0.006          | $0          | Free            | 1     | 5 TB       | [Full](https://docs.impossiblecloud.com/)                                                            | Yes         | Yes        | Newer, EU-focused, limited track record                     |
 | [Rabata](https://rabata.io)                                                         | $0.010          | $0.01       | None            | 2     | 5 TB       | [Full](https://rabata.io/docs/s3-api)                                                                | —           | —          | No free egress; Backup plan billed in 10 TB increments      |
+| [STRG](https://strg.com/pricing) | $0.0068 | $0 | Unlimited | 1 | Not published | [Full](https://docs.strg.com/s3-api/overview) | Yes | Always on | Versioning always on, so old versions stay billed until removed |
 | [Fastly Object Storage](https://www.fastly.com/products/storage)                    | $0.012          | $0          | Included w/ CDN | 1     | 5 TB       | [Full](https://docs.fastly.com/en/storage/)                                                          | No          | No         | Newer product, fewer features than mature providers         |
 
 `$0*` = Free egress with "reasonable use" policy — typically means egress cannot exceed storage volume. Check the provider's terms.
@@ -77,7 +78,7 @@ Cloudflare R2 and Tigris genuinely offer unlimited free egress — there's no as
 - OVHcloud: Made egress free in January 2026, but the 30-day minimum retention still applies to all tiers — delete early, pay anyway.
 - Backblaze B2: 3x your stored volume is free. Beyond that, $0.01/GB. Generous for most workloads, but media streaming will blow through it.
 
-**Bottom line**: If your workload is egress-heavy (CDN origin, ML training data distribution, media streaming), only R2, Tigris, Fastly, and Impossible Cloud offer truly unlimited free egress without caveats.
+**Bottom line**: If your workload is egress-heavy (CDN origin, ML training data distribution, media streaming), only R2, Tigris, Fastly, Impossible Cloud and STRG offer truly unlimited free egress without caveats.
 
 ### Minimum Retention Will Burn You
 
@@ -131,6 +132,7 @@ Real-world monthly cost for a common workload: **10 TB stored, 5 TB egress/month
 | Cloudflare R2 | $150    | $0     | $3.60 | $4.50 | **~$158**    |
 | OVHcloud      | $70     | $0     | $1    | $5    | **~$76**     |
 | Rabata        | $100    | $50    | $0    | $0    | **~$150**    |
+| STRG          | $68     | $0     | $0    | $0    | **~$68**     |
 | Hetzner       | $52     | $40    | $1    | $5    | **~$98**     |
 | AWS S3        | $230    | $450   | $4    | $5    | **~$689**    |
 | GCS           | $200    | $600   | $4    | $5    | **~$809**    |
@@ -262,6 +264,7 @@ The most important number nobody compares: **what does it cost to leave?**
 | IDrive e2        | $0*         | **$0***             | ~9 days       | Easy* (reasonable use)   |
 | Impossible Cloud | $0          | **$0**              | ~9 days       | **Trivial**              |
 | Rabata           | $0.01/GB    | **$1,000**          | ~9 days       | Easy                     |
+| STRG             | $0          | **$0**              | ~9 days       | **Trivial**              |
 | Storj            | $0.007/GB   | **$700**            | ~9 days       | Easy                     |
 | MinIO            | $0          | **$0**              | Your infra    | **Trivial** (you own it) |
 
@@ -380,6 +383,9 @@ What real engineers say about these providers — blog posts, HN threads, and pr
 ## Changelog
 
 What changed recently in the object storage landscape. See [`data/CHANGELOG.md`](./data/CHANGELOG.md) for detailed per-provider updates.
+
+### Q4 2026
+- STRG: Added. $6.80/TB with all egress and standard API requests included, regions in US East and EU Central.
 
 ### Q1 2026
 - OVHcloud: Dropped all egress fees (January 2026). Genuinely free, no fair-use policy.
